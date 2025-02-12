@@ -76,17 +76,25 @@ The dataset consists of **5000 records**, each representing a student's academic
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/BeyondGPA/BeyondGPA.git
+   git clone https://github.com/BeyondGPA/beyondgpa.github.io.git
+   ```
+
+2. Navigate to the project directory:
+   ```bash
+   cd beyondgpa.github.io
+   cd client
    ```
 
 2. Install Dependencies  
     ```bash
     npm install
     ```
+
 3. Run the Project  
     ```bash
     npm start
     ```
+
 4. Access the app at `http://localhost:4200/`.
 
 ---
