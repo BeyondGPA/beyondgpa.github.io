@@ -9,14 +9,14 @@ BeyondGPA is a data-driven project exploring the relationship between academic p
 
 ## 📖 Table of Contents
 
-- [Overview](#📌-overview)
-- [Dataset Description](#📂-dataset-description)
-- [Research Question](#❓-research-question)
-- [Analysis Goals](#🎯-analysis-goals)
-- [How to Use](#🚀-how-to-use)
-- [How to Deploy](#🌍-how-to-deploy)
-- [Technologies](#🔧-technologies)
-- [License](#📜-license)
+- [Overview](#-overview)
+- [Dataset Description](#-dataset-description)
+- [Research Question](#-research-question)
+- [Analysis Goals](#-analysis-goals)
+- [How to Use](#-how-to-use)
+- [How to Deploy](#-how-to-deploy)
+- [Technologies](#-technologies)
+- [License](#-license)
 
 ---
 
