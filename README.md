@@ -13,6 +13,7 @@ BeyondGPA is a data-driven project exploring the relationship between academic p
 - [Dataset Description](#-dataset-description)
 - [Research Question](#-research-question)
 - [Analysis Goals](#-analysis-goals)
+- [Project Structure](#project-structure)
 - [How to Use](#-how-to-use)
 - [How to Deploy](#-how-to-deploy)
 - [Technologies](#-technologies)
@@ -71,6 +72,42 @@ The dataset consists of **5000 records**, each representing a student's academic
    - Are students from **top universities** more satisfied with their careers, or do other factors like **work-life balance** and **soft skills** matter more?
 
 ---
+
+## Project Structure
+
+The project is organized as follows:
+
+```
+BeyondGPA.github.io/
+client/src/
+├─ app/
+│  ├─ components/
+│  │  ├─ header/
+│  │  │  ├─ header.component.ts
+│  │  │  ├─ header.component.html
+│  │  │  └─ header.component.scss
+│  │  └─ viz-section/
+│  │     ├─ viz-section.component.ts
+│  │     ├─ viz-section.component.html
+│  │     └─ viz-section.component.scss
+│  ├─ pages/
+│  │  └─ main-page/
+│  │     ├─ main-page.component.ts
+│  │     ├─ main-page.component.html
+│  │     └─ main-page.component.scss
+│  └─ services/
+│     ├─ data/
+│     │  └─ data.service.ts
+│     └─ theme/
+│        └─ theme.service.ts
+├─ assets/
+│  └─ data/
+│     └─ education_career_success.csv
+└─ styles.scss
+```
+
+---
+
 
 ## 🚀 How to Use
 

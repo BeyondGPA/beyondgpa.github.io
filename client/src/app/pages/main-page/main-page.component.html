@@ -1,3 +1,16 @@
-<div>
-  BeyondGPA
-</div>
+<main>
+  <app-header></app-header>
+  <div class="main-container">
+    <app-viz-section
+      title="Academic Performance vs Career Success"
+      description="Explore the correlation between academic metrics and professional outcomes">
+      <app-sankey-viz></app-sankey-viz>
+    </app-viz-section>
+
+    <app-viz-section
+      title="Experiential Learning Impact"
+      description="Analyze how practical experiences influence career progression">
+      <app-scatter-viz></app-scatter-viz>
+    </app-viz-section>
+  </div>
+</main>
