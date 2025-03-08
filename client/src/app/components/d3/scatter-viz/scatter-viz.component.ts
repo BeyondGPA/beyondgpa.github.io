@@ -30,7 +30,7 @@ export class ScatterVizComponent implements OnInit, AfterViewInit {
 
     const element = this.chartContainer.nativeElement;
     const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-    const width = 600 - margin.left - margin.right;
+    const width = 800 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
     const svg = d3.select(element)

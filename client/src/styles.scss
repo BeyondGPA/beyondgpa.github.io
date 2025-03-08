@@ -10,7 +10,7 @@
     box-shadow: none;
 }
 
-:root, [data-theme='dark'], [data-theme='light'] {
+:root, [data='dark'], [data='light'] {
     transition: all 0.3s ease-in-out;
 }
 
@@ -25,7 +25,7 @@
     --footer-text: #888;
 }
 
-[data-theme='light'] {
+[data='light'] {
     --primary-color: #dddddd;
     --secondary-color: #cdcdcd;
     --tertiary-color: #9a9a9a;
@@ -56,6 +56,11 @@ body {
     background-repeat: no-repeat;
     animation: gradientAnimation 12s ease infinite;
     color: var(--text-color);
+}
+
+
+body::-webkit-scrollbar {
+    display: none;
 }
 
 @keyframes gradientAnimation {

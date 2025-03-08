@@ -12,10 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class HeaderComponent {
   constructor(public themeService: ThemeService) {}
-  isDarkTheme = false;
 
   toggleTheme() {
-    this.isDarkTheme = !this.isDarkTheme;
-    document.body.classList.toggle('dark-theme', this.isDarkTheme);
+    this.themeService.toggleTheme();
   }
 }

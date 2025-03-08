@@ -16,7 +16,6 @@ export class SankeyVizComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {}
 
   async ngAfterViewInit(): Promise<void> {
-    // Load the CSV data using the data service
     const data = await this.dataService.loadCareerData();
     this.renderChart(data);
   }
