@@ -1,6 +1,8 @@
 <header class="header">
     <div class="header-content">
-      <h1 class="title">Beyond<span>GPA</span></h1>
+      <a href="/home" class="header-link">
+        <h1 class="title">Beyond<span>GPA</span></h1>
+      </a>
       <p class="subtitle">Redefining Career Success Metrics</p>
       <div class="icons">
         <ul class="example-2">
@@ -8,7 +10,6 @@
             <a
               data-social="info"
               aria-label="Information"
-              target="_blank"
               href="/about"
             >
               <div class="filled"></div>
@@ -51,26 +52,10 @@
               </svg>
             </a>
           </li>
-          <li class="icon-content">
-            <a data-social="theme"
-               aria-label="Theme"
-               (click)="toggleTheme()"
-            >
-                <svg
-                xml:space="preserve"
-                viewBox="0 0 16 16"
-                class="bi bi-moon"
-                fill="currentColor"
-                height="16"
-                width="16"
-                xmlns="http://www.w3.org/2000/svg"
-                >
-                <path
-                  fill="currentColor"
-                  d="M6 .278a7.5 7.5 0 1 0 9.447 9.447A7.5 7.5 0 0 1 6 .278zM8 15a7 7 0 1 1 6.32-4.472A7.5 7.5 0 0 0 8 15z"
-                ></path>
-                </svg>
-            </a>
+          <li class="toggle-theme">
+            <button class="button" (click)="toggleTheme()">
+              <img [src]="iconSrc" alt="Theme Icon" height="16" width="16">
+            </button>
           </li>
         </ul>
       </div>

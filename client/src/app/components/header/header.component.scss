@@ -12,6 +12,11 @@
     padding: 0 2rem;
     position: relative;
   }
+  .header-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
 
   .icons {
     position: absolute;
@@ -52,7 +57,7 @@
     &::after {
       content: '';
       position: absolute;
-      bottom: -5px;
+      bottom: -0.5px;
       left: 0;
       width: 100%;
       height: 3px;
@@ -71,6 +76,10 @@
 
 ul {
   list-style: none;
+  background-color: var(--text-color);
+  padding: 2px;
+  border-radius: 5px;
+  
 }
 
 .example-2 {
@@ -112,7 +121,7 @@ ul {
   height: 50px;
   border-radius: 50%;
   color: #4d4d4d;
-  background-color: #fff;
+  background-color: #ffffff00;
   transition: all 0.3s ease-in-out;
 }
 .example-2 .icon-content a:hover {
@@ -149,4 +158,29 @@ ul {
 .example-2 .icon-content a[data-social="github"] .filled,
 .example-2 .icon-content a[data-social="github"] ~ .tooltip {
   background-color: #24262a;
+}
+
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #ffffff00;
+  border: none;
+  border-radius: 50%;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    background-color: #ffffff4e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
 }

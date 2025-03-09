@@ -9,7 +9,10 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./viz-section.component.scss']
 })
 export class VizSectionComponent {
+  @Input() sectionId!: string;
   @Input() title!: string;
   @Input() description!: string;
   @Input() vizId!: string;
+  @Input() questions!: { id: string, text: string }[];
+  @Input() answers!: { id: string, text: string }[];
 }

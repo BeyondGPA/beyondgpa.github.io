@@ -79,31 +79,30 @@ The project is organized as follows:
 
 ```
 BeyondGPA.github.io/
-client/src/
-├─ app/
-│  ├─ components/
-│  │  ├─ header/
-│  │  │  ├─ header.component.ts
-│  │  │  ├─ header.component.html
-│  │  │  └─ header.component.scss
-│  │  └─ viz-section/
-│  │     ├─ viz-section.component.ts
-│  │     ├─ viz-section.component.html
-│  │     └─ viz-section.component.scss
-│  ├─ pages/
-│  │  └─ main-page/
-│  │     ├─ main-page.component.ts
-│  │     ├─ main-page.component.html
-│  │     └─ main-page.component.scss
-│  └─ services/
-│     ├─ data/
-│     │  └─ data.service.ts
-│     └─ theme/
-│        └─ theme.service.ts
-├─ assets/
-│  └─ data/
-│     └─ education_career_success.csv
-└─ styles.scss
+└─ client/src/
+   └─ app/
+      ├─ components/
+      │  ├─ header/
+      │  ├─ viz-section/
+      │  └─ d3/
+      │     ├─ sankey-viz/
+      │     │  ├─ sankey-viz.component.ts
+      │     │  ├─ sankey-viz.component.html
+      │     │  └─ sankey-viz.component.scss
+      │     └─ scatter-viz/
+      │        ├─ scatter-viz.component.ts
+      │        ├─ scatter-viz.component.html
+      │        └─ scatter-viz.component.scss
+      ├─ pages/
+      │  └─ main-page/
+      │     ├─ main-page.component.ts
+      │     ├─ main-page.component.html
+      │     └─ main-page.component.scss
+      └─ services/
+         ├─ data/
+         │  └─ data.service.ts
+         └─ theme/
+            └─ theme.service.ts
 ```
 
 ---

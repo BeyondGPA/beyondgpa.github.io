@@ -1,7 +1,16 @@
 main {
-    padding-top: 7rem;
-}
-
-.main-container {
-    padding: 30px;
-}
+    padding-top: 140px;
+  }
+  
+  .timeline-container {
+    position: relative;
+    padding: 0 30px;
+    
+    // Ensure each viz section aligns well with the timeline dot
+    app-viz-section {
+      position: relative;
+      margin-left: 40px; // to offset from the timeline line
+      margin-bottom: 3rem;
+    }
+  }
+  

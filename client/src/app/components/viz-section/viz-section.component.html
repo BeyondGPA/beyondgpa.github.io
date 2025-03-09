@@ -1,9 +1,32 @@
 <section class="viz-section">
-  <div class="header">
-    <h2>{{ title }}</h2>
-    <p>{{ description }}</p>
-  </div>
+  <header class="viz-header">
+    <h2 class="viz-title"><span>{{ sectionId }} </span><span>{{ title }}</span></h2>
+  </header>
+  
   <div class="viz-container">
-    <ng-content></ng-content>
+    <div class="viz-breakdown">
+      <h3>Questions Addressed</h3>
+      <ul class="question-list">
+        <li *ngFor="let question of questions">
+          <strong>{{ question.id }}:</strong> {{ question.text }}
+        </li>
+      </ul>
+    </div>
+    
+    <div class="viz-description">
+      <p>{{ description }}</p>
+    </div>
+    <div class="viz-d3-container">
+      <ng-content></ng-content>
+    </div>
+  
+    <div class="viz-breakdown">
+      <h3>Answers</h3>
+      <ul class="question-list">
+        <li *ngFor="let answer of answers">
+          <strong>{{ answer.id }}:</strong> {{ answer.text }}
+        </li>
+      </ul>
+    </div>
   </div>
 </section>
