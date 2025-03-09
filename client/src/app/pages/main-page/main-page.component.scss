@@ -14,8 +14,10 @@ footer {
   align-items: center;
   padding: 5px;
   color: var(--footer-text);
-  border-top: 1px solid var(--secondary-color);
   margin-top: 40px;
+
+  background: var(--background-color);
+  backdrop-filter: blur(10px);
 
   .logo {
     width: 50px;
