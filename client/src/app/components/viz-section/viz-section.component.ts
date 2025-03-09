@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class VizSectionComponent {
   @Input() sectionId!: string;
-  @Input() title!: string;
+  @Input() section!: string;
   @Input() description!: string;
   @Input() vizId!: string;
   @Input() questions!: { id: string, text: string }[];
