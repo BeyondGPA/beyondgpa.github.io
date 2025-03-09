@@ -19,7 +19,7 @@
     --secondary-color: #424597;
     --tertiary-color: #1c1656;
     --quaternary-color: #393c7d;
-    --background-color: #1c0946e7;
+    --background-color: #2c177283;
     --text-color: #cbcbcb;
     --highlight-color: #e94560;
     --footer-text: #888;
@@ -30,7 +30,7 @@
     --secondary-color: #cdcdcd;
     --tertiary-color: #9a9a9a;
     --quaternary-color: #8a8a8a;
-    --background-color: #b9b9b9;
+    --background-color: #dddddd83;
     --text-color: #333333;
     --highlight-color: #d94560;
     --footer-text: #2d2d2d;
@@ -67,4 +67,8 @@ body::-webkit-scrollbar {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+text {
+    fill: var(--text-color) !important;
 }

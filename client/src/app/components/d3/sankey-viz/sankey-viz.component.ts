@@ -30,7 +30,7 @@ export class SankeyVizComponent implements OnInit, AfterViewInit {
       totalSalary += sumSalary;
       flows.push({ field, sumSalary });
     });
-
+  
     // Set up SVG dimensions and margins
     const element = this.chartContainer.nativeElement;
     const width = 600;
@@ -39,42 +39,43 @@ export class SankeyVizComponent implements OnInit, AfterViewInit {
       .append('svg')
       .attr('width', width)
       .attr('height', height);
-
-    const leftX = 50;
-    const rightX = 450;
+  
+    const rectWidth = 50;
+    const leftX = (width / 2) - rectWidth - 50; // Center the left rectangles
+    const rightX = (width / 2) + 50; // Center the right rectangles
     const availableHeight = 300;
     const topMargin = 50;
-
+  
     let leftOffset = topMargin;
     let rightOffset = topMargin;
-
+  
     flows.forEach(flow => {
       const rectHeight = (flow.sumSalary / totalSalary) * availableHeight;
       // Draw left rectangle for the field
       svg.append('rect')
          .attr('x', leftX)
          .attr('y', leftOffset)
-         .attr('width', 50)
+         .attr('width', rectWidth)
          .attr('height', rectHeight)
          .attr('fill', 'steelblue');
-
+  
       // Draw corresponding rectangle on the right side
       svg.append('rect')
          .attr('x', rightX)
          .attr('y', rightOffset)
-         .attr('width', 50)
+         .attr('width', rectWidth)
          .attr('height', rectHeight)
          .attr('fill', 'orange');
-
+  
       // Draw a curved path connecting the two rectangles
       const leftYMid = leftOffset + rectHeight / 2;
       const rightYMid = rightOffset + rectHeight / 2;
       svg.append('path')
-         .attr('d', `M${leftX + 50},${leftYMid} C${(leftX + 50 + rightX) / 2},${leftYMid} ${(leftX + 50 + rightX) / 2},${rightYMid} ${rightX},${rightYMid}`)
+         .attr('d', `M${leftX + rectWidth},${leftYMid} C${(leftX + rectWidth + rightX) / 2},${leftYMid} ${(leftX + rectWidth + rightX) / 2},${rightYMid} ${rightX},${rightYMid}`)
          .attr('stroke', '#999')
          .attr('stroke-width', Math.max(1, rectHeight / 10))
          .attr('fill', 'none');
-
+  
       // Add field labels to the left side
       svg.append('text')
          .attr('x', leftX - 10)
@@ -82,7 +83,7 @@ export class SankeyVizComponent implements OnInit, AfterViewInit {
          .attr('text-anchor', 'end')
          .attr('alignment-baseline', 'middle')
          .text(flow.field);
-
+  
       leftOffset += rectHeight;
       rightOffset += rectHeight;
     });

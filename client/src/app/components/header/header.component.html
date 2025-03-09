@@ -8,6 +8,7 @@
         <ul class="example-2">
           <li class="icon-content">
             <a
+              title="About"
               data-social="info"
               aria-label="Information"
               href="/about"
@@ -30,10 +31,12 @@
             </a>
           </li>
           <li class="icon-content">
-            <a data-social="github"
-               aria-label="GitHub"
-               target="_blank"
-               href="https://github.com/BeyondGPA/beyondgpa.github.io"
+            <a
+              title="Source Code"
+              data-social="github"
+              aria-label="GitHub"
+              target="_blank"
+              href="https://github.com/BeyondGPA/beyondgpa.github.io"
             >
               <div class="filled"></div>
               <svg
@@ -53,7 +56,11 @@
             </a>
           </li>
           <li class="toggle-theme">
-            <button class="button" (click)="toggleTheme()">
+            <button
+              title="Toggle Theme"
+              class="button"
+              (click)="toggleTheme()"
+            >
               <img [src]="iconSrc" alt="Theme Icon" height="16" width="16">
             </button>
           </li>
