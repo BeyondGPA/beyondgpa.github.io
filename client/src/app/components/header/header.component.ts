@@ -11,13 +11,15 @@ import { ThemeService } from '@app/services/theme/theme.service';
 })
 export class HeaderComponent implements OnInit {
   iconSrc: string;
+  hoverIconSrc: string;
+  isHovered = false;
 
   constructor(public themeService: ThemeService) {}
 
   ngOnInit() {
-    this.updateIcon();
+    this.updateIcons();
     this.themeService.themeChanged.subscribe(() => {
-      this.updateIcon();
+      this.updateIcons();
     });
   }
 
@@ -25,7 +27,9 @@ export class HeaderComponent implements OnInit {
     this.themeService.toggleTheme();
   }
 
-  updateIcon() {
-    this.iconSrc = this.themeService.getCurrentTheme() === 'dark' ? 'assets/icons/sun.svg' : 'assets/icons/moon.svg';
+  updateIcons() {
+    const isDarkMode = this.themeService.getCurrentTheme() === 'dark';
+    this.iconSrc = isDarkMode ? 'assets/icons/sun.svg' : 'assets/icons/moon.svg';
+    this.hoverIconSrc = isDarkMode ? 'assets/icons/sun_hover.svg' : 'assets/icons/moon_hover.svg';
   }
 }
