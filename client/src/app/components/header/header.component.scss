@@ -161,14 +161,23 @@ ul {
   img {
     width: 24px;
     height: 24px;
+    transition: opacity 0.3s ease-in-out;
   }
 
   &:hover {
     background-color: #ffffff4e;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    img {
+      opacity: 0.5; // Adjust the opacity value as needed for the transition
+    }
+  }
+
+  &:hover img {
+    opacity: 1; // Ensure opacity returns to normal at the end of the animation
   }
 }
 
 .button img {
-  transition: all 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
 }
