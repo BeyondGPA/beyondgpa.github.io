@@ -1,6 +1,6 @@
 .viz-section {
   position: relative;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--viz-section-color);
   border-radius: 12px;
   padding: 2rem;
   margin: 2rem 0;

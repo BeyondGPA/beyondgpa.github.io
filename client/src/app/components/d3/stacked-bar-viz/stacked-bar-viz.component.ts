@@ -88,7 +88,7 @@ export class StackedBarVizComponent implements AfterViewInit {
       .domain([0, yMaxStacked])
       .range([height - marginBottom, marginTop]);
 
-    const color = d3.scaleSequential(d3.interpolateBlues)
+    const color = d3.scaleSequential(d3.interpolateViridis)
       .domain([-0.5 * n, 1.5 * n]);
 
     // --- Create the SVG and Draw the Bars ---
