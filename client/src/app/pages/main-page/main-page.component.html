@@ -2,7 +2,7 @@
   <app-header></app-header>
   <div class="timeline-container">
     <app-viz-section
-      sectionId="4.1"
+      sectionId="1."
       section="Academic Performance vs Career Success"
       description="Explore the correlation between academic metrics and professional outcomes"
       [questions]="academicPerformanceQuestions"
@@ -11,12 +11,21 @@
     </app-viz-section>
 
     <app-viz-section
-      sectionId="4.2"
+      sectionId="2."
       section="Experiential Learning Impact"
       description="Analyze how practical experiences influence career progression"
       [questions]="experientialLearningQuestions"
       [answers]="experientialLearningAnswers">
       <app-scatter-viz></app-scatter-viz>
+    </app-viz-section>
+
+    <app-viz-section
+      sectionId="3."
+      section="Experiential Learning Impact"
+      description="Analyze how practical experiences influence career progression"
+      [questions]="experientialLearningQuestions"
+      [answers]="experientialLearningAnswers">
+      <app-stacked-bar-viz></app-stacked-bar-viz>
     </app-viz-section>
   </div>
   

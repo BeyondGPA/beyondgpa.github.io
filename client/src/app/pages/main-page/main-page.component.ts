@@ -4,11 +4,12 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { VizSectionComponent } from '../../components/viz-section/viz-section.component';
 import { ScatterVizComponent } from '@app/components/d3/scatter-viz/scatter-viz.component';
 import { SankeyVizComponent } from '@app/components/d3/sankey-viz/sankey-viz.component';
+import { StackedBarVizComponent } from '@app/components/d3/stacked-bar-viz/stacked-bar-viz.component';
 
 @Component({
   standalone: true,
   selector: 'app-main-page',
-  imports: [CommonModule, HeaderComponent, VizSectionComponent, ScatterVizComponent, SankeyVizComponent],
+  imports: [CommonModule, HeaderComponent, VizSectionComponent, ScatterVizComponent, SankeyVizComponent, StackedBarVizComponent],
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss']
 })
