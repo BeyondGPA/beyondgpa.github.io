@@ -14,23 +14,36 @@ import { StackedBarVizComponent } from '@app/components/d3/stacked-bar-viz/stack
   styleUrls: ['./main-page.component.scss']
 })
 export class MainPageComponent {
-  academicPerformanceQuestions = [
-    { id: 'A1.1 (★★★)', text: 'Dans quelle mesure un GPA élevé à l’université corrèle avec un succès dans leur carrière ?' },
-    { id: 'A1.2 (★★★)', text: 'Quel est l’impact du classement universitaire par rapport au salaire initial ?' },
-    { id: 'A1.3 (★★★)', text: 'Existe-t-il une corrélation entre les indicateurs académiques (GPA, SAT, classement) et le niveau de satisfaction professionnelle ?' }
+  Questions1 = [
+    { id: 'A1.1 (★★★)', text: 'Dans quelle mesure un GPA élevé à l’université corrèle avec un succès dans leur carrière ?' }
   ];
 
-  academicPerformanceAnswers = [
-    { id: 'A1.1 (★★★)', text: 'Dans quelle mesure un GPA élevé à l’université corrèle avec un succès dans leur carrière ?' },
-    { id: 'A1.2 (★★★)', text: 'Quel est l’impact du classement universitaire par rapport au salaire initial ?' },
-    { id: 'A1.3 (★★★)', text: 'Existe-t-il une corrélation entre les indicateurs académiques (GPA, SAT, classement) et le niveau de satisfaction professionnelle ?' }
+  Answers1 = [
+    { id: 'A1.1 (★★★)', text: 'Les étudiants avec un GPA élevé tendent à obtenir un salaire de départ plus élevé et plus d’offres d’emploi, indiquant une corrélation positive entre performance académique et réussite professionnelle.' }
   ];
 
-  experientialLearningQuestions = [
-    // Add questions for the "Experiential Learning Impact" section here
+
+  Questions2 = [
+    { id: '', text: '' },
+    { id: '', text: '' },
+    { id: '', text: '' }
   ];
 
-  experientialLearningAnswers = [
-    // Add answers for the "Experiential Learning Impact" section here
+  Answers2 = [
+    { id: '', text: '' },
+    { id: '', text: '' },
+    { id: '', text: '' }
+  ];
+
+  Questions3 = [
+    { id: '', text: '' },
+    { id: '', text: '' },
+    { id: '', text: '' }
+  ];
+
+  Answers3 = [
+    { id: '', text: '' },
+    { id: '', text: '' },
+    { id: '', text: '' }
   ];
 }

@@ -56,7 +56,7 @@
   }
   
   .viz-d3-container {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--viz-background-color);
     border-radius: 12px;
     overflow: hidden;
     position: relative;
