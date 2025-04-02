@@ -69,7 +69,7 @@ export class Visual2Component implements AfterViewInit {
 
     // Y-axis scale is always the same: Starting_Salary
     const y = d3.scaleLinear()
-      .domain([this.globalMinY, this.globalMaxY]) // Use the global min/max for y-axis (always salary)
+      .domain([this.globalMinY, this.globalMaxY])
       .nice()
       .range([height - margin.bottom, margin.top]);
 
@@ -106,7 +106,7 @@ export class Visual2Component implements AfterViewInit {
       .data(filteredData)
       .join("circle")
       .attr("cx", d => x(+d[this.selectedX]))
-      .attr("cy", d => y(+d['Starting_Salary'])) // Always use 'Starting_Salary' for Y
+      .attr("cy", d => y(+d['Starting_Salary']))
       .attr("r", 5)
       .attr("fill", "steelblue")
       .attr("opacity", 0.7)
@@ -125,7 +125,7 @@ export class Visual2Component implements AfterViewInit {
           .attr("fill", "steelblue");
       });
 
-    // Add a label for the Field of Study
+
     svg.append("text")
       .attr("x", width / 2)
       .attr("y", margin.top - 10)
@@ -135,9 +135,8 @@ export class Visual2Component implements AfterViewInit {
       .text(`${field}`);
   }
 
-  updateChart(): void {
-    // Recalculate the global min/max based on the selected X variable
-    this.calculateGlobalMinMax();
-    this.renderCharts();
-  }
+    updateChart(): void {
+      this.calculateGlobalMinMax();
+      this.renderCharts();
+    }
 }

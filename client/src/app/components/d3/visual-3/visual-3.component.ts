@@ -1,7 +1,9 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
+import * as d3Sankey from 'd3-sankey';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '@app/services/data/data.service';
+
 
 @Component({
   standalone: true,
@@ -12,117 +14,192 @@ import { DataService } from '@app/services/data/data.service';
 })
 export class Visual3Component implements AfterViewInit {
   @ViewChild('chart') chartContainer!: ElementRef;
+  data: any[] = [];
+  gpaCount: any = {};
+  gpaGroups: string[] = ["Low", "Medium-Low", "Medium-High", "High"];
+  rankGroups: string[] = ["Top", "Upper-Mid", "Mid", "Lower-Mid", "Bottom"];
+  satCount: any = {};
+  rankCount: any = {};
 
-  leftVariable: string = 'High_School_GPA';  // Default left variable
-  rightVariable: string = 'Years_to_Promotion';  // Default right variable
+
 
   constructor(private dataService: DataService) {}
 
-  ngOnInit(): void {}
-
-  async ngAfterViewInit(): Promise<void> {
-    const data = await this.dataService.loadCareerData();
-    console.log("Loaded Data:", data);  // Debugging: See the raw data in the console
-    this.renderChart(data);
+  
+  processData(): void {
+    this.data = this.data.map(student => ({
+      ...student,
+      GPA_Group: this.getGPAGroup(+student.University_GPA),
+      SAT_Group: this.getSATGroup(+student.SAT_Score),
+      University_Rank_Group: this.getUniversityRankGroup(+student.University_Ranking),
+    }));
+  
+    console.log("Processed Data:", this.data.slice(0, 10)); // Log to check if groups are assigned correctly
   }
-  renderChart(data: any[]): void {
-    const leftVariable = this.leftVariable;
-    const rightVariable = this.rightVariable;
+  
 
-    // Group the data by the selected left variable (e.g., High_School_GPA)
-    const grouped = d3.group(data, d => d[leftVariable]);
 
-    // Debugging: Check grouped data structure
-    console.log("Grouped Data:", grouped);
-
-    let total = 0;
-    const flows: { leftValue: string, sumRightValue: number }[] = [];
-
-    // Process each group and summarize the right variable
-    grouped.forEach((values, leftValue) => {
-      let sumRightValue = 0;
-
-      // If the right variable is numerical (e.g., Years_to_Promotion)
-      if (typeof values[0][rightVariable] === 'number') {
-        sumRightValue = d3.sum(values, d => +d[rightVariable]);
-      } else {
-        // If it's categorical (e.g., Current_Job_Level), count occurrences
-        const groupedByJobLevel = d3.rollup(values, v => v.length, d => d[rightVariable]);
-        sumRightValue = groupedByJobLevel.size;
-      }
-
-      total += sumRightValue;
-      flows.push({ leftValue, sumRightValue });
+  ngAfterViewInit(): void {
+    this.dataService.loadCareerData().then(data => {
+      this.data = data;
+      this.renderSankey();
     });
+    console.log(this.chartContainer.nativeElement);
 
-    // Debugging: Check the summarized flow data
-    console.log("Summarized Flows:", flows);
+  }
+    
+  renderSankey(): void {
+    // Clear previous chart
+    d3.select(this.chartContainer.nativeElement).selectAll("svg").remove();
 
-    // Set up SVG dimensions and margins
-    const element = this.chartContainer.nativeElement;
-    const width = 600;
-    const height = 400;
-    const svg = d3.select(element)
+    // Prepare data for the Sankey diagram
+    const sankeyData = this.processDataForSankey();
+
+    const width = 800;
+    const height = 600;
+
+    // Create the SVG element for the Sankey diagram
+    const svg = d3.select(this.chartContainer.nativeElement)
       .append('svg')
       .attr('width', width)
-      .attr('height', height);
+      .attr('height', height)
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .style('max-width', '100%')
+      .style('height', 'auto');
 
-    const rectWidth = 50;
-    const leftX = (width / 2) - rectWidth - 50; // Center the left rectangles
-    const rightX = (width / 2) + 50; // Center the right rectangles
-    const availableHeight = 300;
-    const topMargin = 50;
+    // Define Sankey layout
+    const sankey = d3Sankey.sankey()
+      .nodeWidth(15)
+      .nodePadding(10)
+      .extent([[1, 1], [width - 1, height - 5]]);
 
-    let leftOffset = topMargin;
-    let rightOffset = topMargin;
+    const { nodes, links } = sankey(sankeyData) as { nodes: Array<{ name: string } & d3Sankey.SankeyNodeMinimal<{}, {}>>, links: d3Sankey.SankeyLinkMinimal<{}, {}>[] };
+    console.log("Nodes:", nodes);
+    console.log("Links:", links);
 
-    // Iterate through the flows and draw the chart
-    flows.forEach(flow => {
-      const rectHeight = (flow.sumRightValue / total) * availableHeight;
+    // Define a color scale for GPA groups
+    const gpaGroups = ["Low", "Medium-Low", "Medium-High", "High"];
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(gpaGroups);
 
-      // Draw left rectangle for the left axis (e.g., GPA)
-      svg.append('rect')
-        .attr('x', leftX)
-        .attr('y', leftOffset)
-        .attr('width', rectWidth)
-        .attr('height', rectHeight)
-        .attr('fill', 'steelblue');
+    // Create a lookup for node names
+    const nodeMap = new Map(nodes.map(d => [d.name, d]));
 
-      // Draw corresponding rectangle on the right side (e.g., Years to Promotion)
-      svg.append('rect')
-        .attr('x', rightX)
-        .attr('y', rightOffset)
-        .attr('width', rectWidth)
-        .attr('height', rectHeight)
-        .attr('fill', 'orange');
+    // Draw links (flows)
+    svg.append("g")
+      .selectAll(".link")
+      .data(links)
+      .join("path")
+      .attr("class", "link")
+      .attr("d", d3Sankey.sankeyLinkHorizontal())
+      .attr("stroke-width", d => Math.max(1, d.width ?? 0))
+      .style("stroke", d => {
+          const sourceNode = typeof d.source === 'object' && 'name' in d.source ? nodeMap.get((d.source as { name: string }).name) : undefined;
+          return sourceNode ? colorScale(sourceNode.name) : "#999"; // Assign color based on GPA group
+      })
+      .style("fill", "none")
+      .style("opacity", 0.7);
 
-      // Draw a curved path connecting the two rectangles
-      const leftYMid = leftOffset + rectHeight / 2;
-      const rightYMid = rightOffset + rectHeight / 2;
-      svg.append('path')
-        .attr('d', `M${leftX + rectWidth},${leftYMid} C${(leftX + rectWidth + rightX) / 2},${leftYMid} ${(leftX + rectWidth + rightX) / 2},${rightYMid} ${rightX},${rightYMid}`)
-        .attr('stroke', '#999')
-        .attr('stroke-width', Math.max(1, rectHeight / 10))
-        .attr('fill', 'none');
+    // Draw nodes
+    svg.append("g")
+      .selectAll(".node")
+      .data(nodes)
+      .join("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.x0},${d.y0})`)
+      .call(g => g.append("rect")
+        .attr("height", d => (d.y1 ?? 0) - (d.y0 ?? 0))
+        .attr("width", d => (d.x1 ?? 0) - (d.x0 ?? 0))
+        .style("fill", d => colorScale(d.name) || "#ddd") // Use same color for GPA nodes
+      );
 
-      // Add left field labels (e.g., GPA, SAT score, etc.)
-      svg.append('text')
-        .attr('x', leftX - 10)
-        .attr('y', leftYMid)
-        .attr('text-anchor', 'end')
-        .attr('alignment-baseline', 'middle')
-        .text(flow.leftValue);
+    // Add labels to nodes
+    // Add labels to nodes
+    svg.append("g")
+    .selectAll(".node")
+    .data(nodes)
+    .join("g")
+    .attr("class", "node")
+    .attr("transform", d => `translate(${d.x0},${d.y0})`)
+    .call(g => g.append("text")
+      .attr("x", d => (d.x0 ?? 0 < width / 2) ? (d.x1 ?? 0 - (d.x0 ?? 0)) + 6 : -6) // Push right for left-side nodes, left for right-side
+      .attr("y", d => ((d.y1 ?? 0) - (d.y0 ?? 0)) / 2)
+      .attr("dy", "0.35em")
+      .attr("text-anchor", d => (d.x0 ?? 0 < width / 2) ? "start" : "end") // Align text correctly
+      .text(d => d.name)
+      .style("font-size", "14px") // Ensure readability
+      .style("fill", "#000") // Ensure contrast
+    );
 
-      // Add right field labels (sum of the right variable, e.g., Years to Promotion or count of Job Levels)
-      svg.append('text')
-        .attr('x', rightX + rectWidth + 10)
-        .attr('y', rightYMid)
-        .attr('alignment-baseline', 'middle')
-        .text(flow.sumRightValue);
-
-      leftOffset += rectHeight;
-      rightOffset += rectHeight;
-    });
 }
+
+
+    processDataForSankey(): any {
+      const links: { source: number; target: number; value: number; }[] = [];
+      const nodes: { name: string }[] = [];
+    
+      // Create nodes for GPA groups and Rank groups
+      this.gpaGroups.forEach(gpaGroup => {
+        nodes.push({ name: gpaGroup });
+      });
+    
+      this.rankGroups.forEach(rankGroup => {
+        nodes.push({ name: rankGroup });
+      });
+    
+      // Create links based on data
+      this.gpaGroups.forEach((gpaGroup, gpaIndex) => {
+        this.rankGroups.forEach((rankGroup, rankIndex) => {
+          const link = {
+            source: gpaIndex,  // Use the index of the GPA group node
+            target: this.gpaGroups.length + rankIndex,  // Use the index of the Rank group node
+            value: this.calculateGroupFlow(gpaGroup, rankGroup)
+          };
+          links.push(link);
+        });
+      });
+    
+      return { nodes, links };
+    }
+    
+  
+
+  calculateGroupFlow(gpaGroup: string, rankGroup: string): number {
+    // Count the number of students within the specified GPA and Rank groups
+    const count = this.data.filter(d => {
+      const gpa = this.getGPAGroup(parseFloat(d['University_GPA']));
+      const rank = this.getUniversityRankGroup(parseInt(d['University_Ranking']));
+      return gpa === gpaGroup && rank === rankGroup;
+    }).length;
+  
+    console.log(`${gpaGroup} -> ${rankGroup}: ${count}`);  // Log flow count for debugging
+    return count;
+  }
+  
+
+
+  getGPAGroup(gpa: number): string {
+    if (gpa >= 2.0 && gpa < 2.5) return "Low";
+    if (gpa >= 2.5 && gpa < 3.0) return "Medium-Low";
+    if (gpa >= 3.0 && gpa < 3.5) return "Medium-High";
+    if (gpa >= 3.5 && gpa <= 4.0) return "High";
+    return "Unknown";
+  }
+  
+  getSATGroup(sat: number): string {
+    if (sat >= 1 && sat <= 600) return "Low";
+    if (sat > 600 && sat <= 1000) return "Medium-Low";
+    if (sat > 1000 && sat <= 1300) return "Medium-High";
+    if (sat > 1300 && sat <= 1600) return "High";
+    return "Unknown";
+  }
+  
+  getUniversityRankGroup(rank: number): string {
+    if (rank >= 1 && rank <= 200) return "Top";
+    if (rank > 200 && rank <= 400) return "Upper-Mid";
+    if (rank > 400 && rank <= 600) return "Mid";
+    if (rank > 600 && rank <= 800) return "Lower-Mid";
+    if (rank > 800 && rank <= 1000) return "Bottom";
+    return "Unknown";
+  }
 
 }
