@@ -2,14 +2,19 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { VizSectionComponent } from '../../components/viz-section/viz-section.component';
-import { ScatterVizComponent } from '@app/components/d3/scatter-viz/scatter-viz.component';
-import { SankeyVizComponent } from '@app/components/d3/sankey-viz/sankey-viz.component';
-import { StackedBarVizComponent } from '@app/components/d3/stacked-bar-viz/stacked-bar-viz.component';
+import { Visual1Component } from '@app/components/d3/visual-1/visual-1.component';
+import { Visual2Component } from '@app/components/d3/visual-2/visual-2.component';
+import { Visual3Component } from '@app/components/d3/visual-3/visual-3.component';
+import { Visual4Component } from '@app/components/d3/visual-4/visual-4.component';
+import { Visual5Component } from '@app/components/d3/visual-5/visual-5.component';
+// import { ScatterVizComponent } from '@app/components/d3/scatter-viz/scatter-viz.component';
+// import { SankeyVizComponent } from '@app/components/d3/sankey-viz/sankey-viz.component';
+// import { StackedBarVizComponent } from '@app/components/d3/stacked-bar-viz/stacked-bar-viz.component';
 
 @Component({
   standalone: true,
   selector: 'app-main-page',
-  imports: [CommonModule, HeaderComponent, VizSectionComponent, ScatterVizComponent, SankeyVizComponent, StackedBarVizComponent],
+  imports: [CommonModule, HeaderComponent, VizSectionComponent, Visual1Component, Visual2Component, Visual3Component, Visual4Component, Visual5Component],
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss']
 })
@@ -42,6 +47,30 @@ export class MainPageComponent {
   ];
 
   Answers3 = [
+    { id: '', text: '' },
+    { id: '', text: '' },
+    { id: '', text: '' }
+  ];
+
+  Questions4 = [
+    { id: '', text: '' },
+    { id: '', text: '' },
+    { id: '', text: '' }
+  ];
+
+  Answers4 = [
+    { id: '', text: '' },
+    { id: '', text: '' },
+    { id: '', text: '' }
+  ];
+
+  Questions5 = [
+    { id: '', text: '' },
+    { id: '', text: '' },
+    { id: '', text: '' }
+  ];
+
+  Answers5 = [
     { id: '', text: '' },
     { id: '', text: '' },
     { id: '', text: '' }
