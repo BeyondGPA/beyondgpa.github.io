@@ -16,8 +16,10 @@ export class Visual3Component implements AfterViewInit {
   @ViewChild('chart') chartContainer!: ElementRef;
   data: any[] = [];
   gpaCount: any = {};
-  gpaGroups: string[] = ["Low", "Medium-Low", "Medium-High", "High"];
+  gpaGroups: string[] = ["2.0-2.5", "2.5-3.0", "3.0-3.5", "3.5-4.0"];
   rankGroups: string[] = ["Top", "Upper-Mid", "Mid", "Lower-Mid", "Bottom"];
+  selectedCategory: 'promotion' | 'jobLevel' ; 
+  leftSelected: 'gpa' | 'sat' | 'rank' = 'gpa'; 
   satCount: any = {};
   rankCount: any = {};
 
@@ -37,6 +39,7 @@ export class Visual3Component implements AfterViewInit {
     console.log("Processed Data:", this.data.slice(0, 10)); // Log to check if groups are assigned correctly
   }
   
+  
 
 
   ngAfterViewInit(): void {
@@ -51,9 +54,10 @@ export class Visual3Component implements AfterViewInit {
   renderSankey(): void {
     // Clear previous chart
     d3.select(this.chartContainer.nativeElement).selectAll("svg").remove();
+    
 
     // Prepare data for the Sankey diagram
-    const sankeyData = this.processDataForSankey();
+    const sankeyData = this.processDataForSankey(this.selectedCategory);
 
     const width = 800;
     const height = 600;
@@ -133,55 +137,69 @@ export class Visual3Component implements AfterViewInit {
 }
 
 
-    processDataForSankey(): any {
-      const links: { source: number; target: number; value: number; }[] = [];
-      const nodes: { name: string }[] = [];
-    
-      // Create nodes for GPA groups and Rank groups
-      this.gpaGroups.forEach(gpaGroup => {
-        nodes.push({ name: gpaGroup });
-      });
-    
-      this.rankGroups.forEach(rankGroup => {
-        nodes.push({ name: rankGroup });
-      });
-    
-      // Create links based on data
-      this.gpaGroups.forEach((gpaGroup, gpaIndex) => {
-        this.rankGroups.forEach((rankGroup, rankIndex) => {
-          const link = {
-            source: gpaIndex,  // Use the index of the GPA group node
-            target: this.gpaGroups.length + rankIndex,  // Use the index of the Rank group node
-            value: this.calculateGroupFlow(gpaGroup, rankGroup)
-          };
-          links.push(link);
-        });
-      });
-    
-      return { nodes, links };
-    }
-    
-  
+  processDataForSankey(selectedCategory: 'Rank' | 'promotion' | 'jobLevel'): any {
+    const links: { source: number; target: number; value: number }[] = [];
+    const nodes: { name: string }[] = [];
 
-  calculateGroupFlow(gpaGroup: string, rankGroup: string): number {
-    // Count the number of students within the specified GPA and Rank groups
-    const count = this.data.filter(d => {
-      const gpa = this.getGPAGroup(parseFloat(d['University_GPA']));
-      const rank = this.getUniversityRankGroup(parseInt(d['University_Ranking']));
-      return gpa === gpaGroup && rank === rankGroup;
-    }).length;
+    // Determine left-side groups
+    const leftSideGroups = this.leftSelected === 'gpa' 
+      ? this.gpaGroups 
+      : this.leftSelected === 'sat' 
+        ? ["Low", "Medium-Low", "Medium-High", "High"] 
+        : this.rankGroups; 
+
+    // Determine right-side groups
+    const rightSideGroups = selectedCategory === 'Rank' 
+      ? this.rankGroups 
+      : selectedCategory === 'promotion' 
+        ? ["Very Fast", "Fast", "Moderate", "Slow", "Very Slow"] 
+        : ["Entry", "Mid", "Senior"];
+
+    // Create nodes for left and right values
+    leftSideGroups.forEach(group => nodes.push({ name: group }));
+    rightSideGroups.forEach(group => nodes.push({ name: group }));
+
+    // Create links based on data
+    leftSideGroups.forEach((leftGroup, leftIndex) => {
+      rightSideGroups.forEach((rightGroup, rightIndex) => {
+        const link = {
+          source: leftIndex,
+          target: leftSideGroups.length + rightIndex,
+          value: this.calculateGroupFlow(leftGroup, rightGroup, selectedCategory)
+        };
+        links.push(link);
+      });
+    });
+
+    return { nodes, links };
+  }
+  // Calculate the flow between left and right groups based on selected category  
+
+  calculateGroupFlow(leftGroup: string, rightGroup: string, category: 'Rank' | 'promotion' | 'jobLevel'): number {
+    return this.data.filter(d => {
+      const leftValue = this.leftSelected === 'gpa' 
+        ? this.getGPAGroup(parseFloat(d['University_GPA'])) 
+        : this.leftSelected === 'sat' 
+          ? this.getSATGroup(parseInt(d['SAT_Score'])) 
+          : this.getUniversityRankGroup(parseInt(d['University_Ranking']));
   
-    console.log(`${gpaGroup} -> ${rankGroup}: ${count}`);  // Log flow count for debugging
-    return count;
+      const rightValue = category === 'Rank'
+        ? this.getUniversityRankGroup(parseInt(d['University_Ranking']))
+        : category === 'promotion'
+          ? this.getPromotionGroup(parseInt(d['Years_to_Promotion']))
+          : d['Current_Job_Level']; // Directly using Job Level
+  
+      return leftValue === leftGroup && rightValue === rightGroup;
+    }).length;
   }
   
 
 
   getGPAGroup(gpa: number): string {
-    if (gpa >= 2.0 && gpa < 2.5) return "Low";
-    if (gpa >= 2.5 && gpa < 3.0) return "Medium-Low";
-    if (gpa >= 3.0 && gpa < 3.5) return "Medium-High";
-    if (gpa >= 3.5 && gpa <= 4.0) return "High";
+    if (gpa >= 2.0 && gpa < 2.5) return "2-2.5";
+    if (gpa >= 2.5 && gpa < 3.0) return "2.5-3.0";
+    if (gpa >= 3.0 && gpa < 3.5) return "3.0-3.5";
+    if (gpa >= 3.5 && gpa <= 4.0) return "3.5-4.0";
     return "Unknown";
   }
   
@@ -201,5 +219,14 @@ export class Visual3Component implements AfterViewInit {
     if (rank > 800 && rank <= 1000) return "Bottom";
     return "Unknown";
   }
+
+  getPromotionGroup(years: number): string {
+    if (years === 1) return "Very Fast";
+    if (years === 2) return "Fast";
+    if (years === 3) return "Moderate";
+    if (years === 4) return "Slow";
+    return "Very Slow";  // 5+ years
+  }
+  
 
 }

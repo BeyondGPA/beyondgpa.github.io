@@ -1,5 +1,17 @@
 <div class="container">
-  <h1>GPA vs University Rank Sankey Diagram</h1>
+  <h1>{{leftSelected}} vs {{selectedCategory}} Sankey Diagram</h1>
+  <select [(ngModel)]="leftSelected" (change)="renderSankey()">
+    <option value="rank">University Rank</option>
+    <option value="sat">SatScore</option>
+    <option value="gpa">GPA</option>
+  </select>
+
+  <select [(ngModel)]="selectedCategory" (change)="renderSankey()">
+    <option value="promotion">Years to Promotion</option>
+    <option value="Current_Job_Level">current job Level</option>
+  </select>
+  <div #chart class="sankey-container"></div>
+  
 
   <!-- The div where the Sankey diagram will be rendered -->
   <div #chart class="sankey-container"></div>
