@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../components/header/header.component';
 import { VizSectionComponent } from '../../components/viz-section/viz-section.component';
 import { Visual1Component } from '@app/components/d3/visual-1/visual-1.component';
@@ -11,10 +12,11 @@ import { Visual5Component } from '@app/components/d3/visual-5/visual-5.component
 // import { SankeyVizComponent } from '@app/components/d3/sankey-viz/sankey-viz.component';
 // import { StackedBarVizComponent } from '@app/components/d3/stacked-bar-viz/stacked-bar-viz.component';
 
+
 @Component({
   standalone: true,
   selector: 'app-main-page',
-  imports: [CommonModule, HeaderComponent, VizSectionComponent, Visual1Component, Visual2Component, Visual3Component, Visual4Component, Visual5Component],
+  imports: [CommonModule, FormsModule, HeaderComponent, VizSectionComponent, Visual1Component, Visual2Component, Visual3Component, Visual4Component, Visual5Component],
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss']
 })
@@ -29,7 +31,7 @@ export class MainPageComponent {
 
 
   Questions2 = [
-    { id: '', text: '' },
+    { id: 'A1.2 (★★★)', text: 'Quel est l’impact du classement universitaire par rapport au salaire initial ?' },
     { id: '', text: '' },
     { id: '', text: '' }
   ];
@@ -41,7 +43,7 @@ export class MainPageComponent {
   ];
 
   Questions3 = [
-    { id: '', text: '' },
+    { id: 'A1.3 (★★★) ', text: 'Existe-t-il une corrélation entre les indicateurs académiques (GPA, SAT, classement) et le niveau de satisfaction professionnelle ?' },
     { id: '', text: '' },
     { id: '', text: '' }
   ];

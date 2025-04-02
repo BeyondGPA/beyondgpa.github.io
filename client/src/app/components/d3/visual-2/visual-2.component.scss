@@ -1,0 +1,67 @@
+/* Style for the container of the dropdown */
+div {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Style for labels to make them look neat */
+  label {
+    font-weight: bold;
+    margin-right: 30px;
+    margin-left: 30px;
+    margin-bottom: 10px;
+    display: inline-block;
+    color: #444;
+  }
+  
+  /* Style for the select dropdown */
+  select {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 200px;
+    background-color: #f9f9f9;
+    color: #333;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+  
+  /* Hover effect on the select */
+  select:hover {
+    border-color: #888;
+    background-color: #e8e8e8;
+  }
+  
+  /* Focus effect on the select (when clicked) */
+  select:focus {
+    border-color: #3498db;
+    background-color: #f0f9ff;
+    outline: none;
+  }
+
+  /* Optional: Add some space between the two dropdowns */
+  select + select {
+    margin-left: 20px;
+  }
+  
+.chart-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    gap: 20px; /* Add some space between the charts */
+    justify-items: center; /* Center each chart within its grid cell */
+  }
+  
+  /* Style for each individual chart */
+  .chart-container svg {
+    width: 100%;
+    height: 200px; /* Adjust the height of the individual charts */
+  }
+  
+
+  .viz-header h2 {
+    font-size: 20px;
+    margin-bottom: 10px; /* Adds space under the title */
+    text-align: center; /* Optional: Center the title */
+    font-weight: bold;
+    color: #333; /* Optional: Change color */
+  }

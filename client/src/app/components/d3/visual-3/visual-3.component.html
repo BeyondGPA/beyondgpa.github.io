@@ -1,1 +1,17 @@
-<div #chart></div>
+<div class="controls">
+    <label for="left-variable">Choose Left Variable:</label>
+    <select id="left-variable" [(ngModel)]="leftVariable">
+      <option value="High_School_GPA">GPA</option>
+      <option value="SAT_Score">SAT Score</option>
+      <option value="University_Ranking">University Ranking</option>
+    </select>
+    
+    <label for="right-variable">Choose Right Variable:</label>
+    <select id="right-variable" [(ngModel)]="rightVariable">
+      <option value="Years_to_Promotion">Years to Promotion</option>
+      <option value="Current_Job_Level">Current Job Level</option>
+    </select>
+  </div>
+  
+  <div #chart class="chart-container"></div>
+  
