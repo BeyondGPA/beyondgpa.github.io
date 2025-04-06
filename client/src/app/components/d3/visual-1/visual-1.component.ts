@@ -27,7 +27,7 @@ export class Visual1Component implements AfterViewInit {
   ngAfterViewInit(): void {
     this.dataService.loadCareerData().then(data => {
       const processedData = this.processData(data);
-      this.renderChart2(data, processedData);
+      this.renderChart(data, processedData);
     });
   }
 
@@ -81,8 +81,7 @@ export class Visual1Component implements AfterViewInit {
     });
   }
 
-
-  renderChart2(data: any[], boxPlotData: BoxPlotStatistics[]): void {
+  renderChart(data: any[], boxPlotData: BoxPlotStatistics[]): void {
     // Set up dimensions
     const margin = {top: 50, right: 30, bottom: 50, left: 50};
     const width = 600 - margin.left - margin.right;
@@ -99,7 +98,7 @@ export class Visual1Component implements AfterViewInit {
     // Add title
     svg.append("text")
       .attr("class", "title")
-      .attr("x", width / 4)
+      .attr("x", width / 2)
       .attr("y", -20)
       .text("University GPA Distribution by Job Level");
 
@@ -139,7 +138,6 @@ export class Visual1Component implements AfterViewInit {
       .attr("rx", 2)
       .attr("ry", 2)
       .attr('fill', d => colorScale(d.jobLevel))
-      .style('stroke', '#000')
 
     // Draw median lines
     svg.selectAll(".median")
@@ -151,8 +149,6 @@ export class Visual1Component implements AfterViewInit {
         .attr("x2", d => (xScale(d.jobLevel) ?? 0) + xScale.bandwidth())
         .attr("y1", d => yScale(d.median))
         .attr("y2", d => yScale(d.median))
-        .style('stroke', '#000')
-        .style('stroke-width', 2);
 
     // Draw whiskers
     svg.selectAll(".whisker")
@@ -169,8 +165,6 @@ export class Visual1Component implements AfterViewInit {
                 .attr("x2", centerX)
                 .attr("y1", yScale(d.max))
                 .attr("y2", yScale(d.q3))
-                .style('stroke', '#000')
-                .style('stroke-width', 2);
             
             // Top whisker
             d3.select(this)
@@ -180,8 +174,6 @@ export class Visual1Component implements AfterViewInit {
                 .attr("x2", centerX)
                 .attr("y1", yScale(d.q1))
                 .attr("y2", yScale(d.min))
-                .style('stroke', '#000')
-                .style('stroke-width', 2);
             
             // Bottom cap
             d3.select(this)
@@ -191,8 +183,6 @@ export class Visual1Component implements AfterViewInit {
                 .attr("x2", centerX + 5)
                 .attr("y1", yScale(d.max))
                 .attr("y2", yScale(d.max))
-                .style('stroke', '#000')
-                .style('stroke-width', 2);
             
             // Top cap
             d3.select(this)
@@ -202,8 +192,6 @@ export class Visual1Component implements AfterViewInit {
                 .attr("x2", centerX + 5)
                 .attr("y1", yScale(d.min))
                 .attr("y2", yScale(d.min))
-                .style('stroke', '#000')
-                .style('stroke-width', 2);
         });
 
     // Draw outliers
