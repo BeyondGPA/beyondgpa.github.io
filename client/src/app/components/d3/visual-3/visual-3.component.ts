@@ -16,9 +16,11 @@ export class Visual3Component implements AfterViewInit {
   @ViewChild('chart') chartContainer!: ElementRef;
   data: any[] = [];
   gpaCount: any = {};
-  gpaGroups: string[] = ["2.0-2.5", "2.5-3.0", "3.0-3.5", "3.5-4.0"];
-  rankGroups: string[] = ["Top", "Upper-Mid", "Mid", "Lower-Mid", "Bottom"];
-  selectedCategory: 'promotion' | 'jobLevel' ; 
+  gpaGroups: string[] = ["2-2.5", "2.5-3.0", "3.0-3.5", "3.5-4.0"];
+satGroups: string[] = ["1-600", "601-1000", "1001-1300", "1301-1600"];
+rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
+
+  selectedCategory: 'promotion' | 'jobLevel' = 'promotion';
   leftSelected: 'gpa' | 'sat' | 'rank' = 'gpa'; 
   satCount: any = {};
   rankCount: any = {};
@@ -125,13 +127,15 @@ export class Visual3Component implements AfterViewInit {
     .attr("class", "node")
     .attr("transform", d => `translate(${d.x0},${d.y0})`)
     .call(g => g.append("text")
-      .attr("x", d => (d.x0 ?? 0 < width / 2) ? (d.x1 ?? 0 - (d.x0 ?? 0)) + 6 : -6) // Push right for left-side nodes, left for right-side
-      .attr("y", d => ((d.y1 ?? 0) - (d.y0 ?? 0)) / 2)
+    .attr("x", d => ((d.x0 ?? 0) < width / 2) ? ((d.x1 ?? 0) - (d.x0 ?? 0)) + 16 : -86)
+    // Push right for left-side nodes, left for right-side
+      .attr("y", d => ((d.y1 ?? 0) - (d.y0 ?? 0)) / 2 + 5) // Center vertically
       .attr("dy", "0.35em")
       .attr("text-anchor", d => (d.x0 ?? 0 < width / 2) ? "start" : "end") // Align text correctly
       .text(d => d.name)
-      .style("font-size", "14px") // Ensure readability
+      .style("font-size", "20px") // Ensure readability
       .style("fill", "#000") // Ensure contrast
+      .style("font-weight", "bold")
     );
 
 }
@@ -141,18 +145,18 @@ export class Visual3Component implements AfterViewInit {
     const links: { source: number; target: number; value: number }[] = [];
     const nodes: { name: string }[] = [];
 
-    // Determine left-side groups
     const leftSideGroups = this.leftSelected === 'gpa' 
-      ? this.gpaGroups 
-      : this.leftSelected === 'sat' 
-        ? ["Low", "Medium-Low", "Medium-High", "High"] 
-        : this.rankGroups; 
+  ? this.gpaGroups 
+  : this.leftSelected === 'sat' 
+    ? this.satGroups 
+    : this.rankGroups;
+
 
     // Determine right-side groups
     const rightSideGroups = selectedCategory === 'Rank' 
       ? this.rankGroups 
       : selectedCategory === 'promotion' 
-        ? ["Very Fast", "Fast", "Moderate", "Slow", "Very Slow"] 
+        ? ["1rst year", "2nd year", "3rd year", "4rt year", "5fth year +"] 
         : ["Entry", "Mid", "Senior"];
 
     // Create nodes for left and right values
@@ -204,28 +208,30 @@ export class Visual3Component implements AfterViewInit {
   }
   
   getSATGroup(sat: number): string {
-    if (sat >= 1 && sat <= 600) return "Low";
-    if (sat > 600 && sat <= 1000) return "Medium-Low";
-    if (sat > 1000 && sat <= 1300) return "Medium-High";
-    if (sat > 1300 && sat <= 1600) return "High";
+    if (sat >= 1 && sat <= 600) return "1-600";
+    if (sat > 600 && sat <= 1000) return "601-1000";
+    if (sat > 1000 && sat <= 1300) return "1001-1300";
+    if (sat > 1300 && sat <= 1600) return "1301-1600";
     return "Unknown";
   }
   
+  
   getUniversityRankGroup(rank: number): string {
-    if (rank >= 1 && rank <= 200) return "Top";
-    if (rank > 200 && rank <= 400) return "Upper-Mid";
-    if (rank > 400 && rank <= 600) return "Mid";
-    if (rank > 600 && rank <= 800) return "Lower-Mid";
-    if (rank > 800 && rank <= 1000) return "Bottom";
+    if (rank >= 1 && rank <= 200) return "1-200";
+    if (rank > 200 && rank <= 400) return "201-400";
+    if (rank > 400 && rank <= 600) return "401-600";
+    if (rank > 600 && rank <= 800) return "601-800";
+    if (rank > 800 && rank <= 1000) return "801-1000";
     return "Unknown";
   }
+  
 
   getPromotionGroup(years: number): string {
-    if (years === 1) return "Very Fast";
-    if (years === 2) return "Fast";
-    if (years === 3) return "Moderate";
-    if (years === 4) return "Slow";
-    return "Very Slow";  // 5+ years
+    if (years === 1) return "1rst year";
+    if (years === 2) return "2nd year";
+    if (years === 3) return "3rd year";
+    if (years === 4) return "4rt year";
+    return "5fth year +";  // 5+ years
   }
   
 

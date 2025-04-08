@@ -1,5 +1,4 @@
 <div class="container">
-  <h1>{{leftSelected}} vs {{selectedCategory}} Sankey Diagram</h1>
   <select [(ngModel)]="leftSelected" (change)="renderSankey()">
     <option value="rank">University Rank</option>
     <option value="sat">SatScore</option>
@@ -8,8 +7,9 @@
 
   <select [(ngModel)]="selectedCategory" (change)="renderSankey()">
     <option value="promotion">Years to Promotion</option>
-    <option value="Current_Job_Level">current job Level</option>
+    <option value="jobLevel">Current Job Level</option>
   </select>
+  
   <div #chart class="sankey-container"></div>
   
 

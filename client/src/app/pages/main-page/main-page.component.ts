@@ -22,36 +22,31 @@ import { Visual5Component } from '@app/components/d3/visual-5/visual-5.component
 })
 export class MainPageComponent {
   Questions1 = [
-    { id: 'A1.1 (★★★)', text: 'Dans quelle mesure un GPA élevé à l’université corrèle avec un succès dans leur carrière ?' }
+    { id: 'A1.1 (★★★)', text: 'To what extent does a high GPA in university correlate with career success?' }
   ];
-
+  
   Answers1 = [
-    { id: 'A1.1 (★★★)', text: 'Les étudiants avec un GPA élevé tendent à obtenir un salaire de départ plus élevé et plus d’offres d’emploi, indiquant une corrélation positive entre performance académique et réussite professionnelle.' }
+    { id: 'A1.1 (★★★)', text: 'Students with a high GPA tend to receive higher starting salaries and more job offers, indicating a positive correlation between academic performance and professional success.' }
   ];
-
-
+  
   Questions2 = [
-    { id: 'A1.2 (★★★)', text: 'Quel est l’impact du classement universitaire par rapport au salaire initial ?' },
-    { id: '', text: '' },
-    { id: '', text: '' }
+    { id: 'A1.2 (★★★)', text: 'What is the impact of academic indicators on starting salary?' },
   ];
-
+  
   Answers2 = [
-    { id: '', text: '' },
-    { id: '', text: '' },
-    { id: '', text: '' }
+    { id: 'A1.2 (★★★)', text: 'Theres no impact' },
+   
   ];
-
+  
   Questions3 = [
-    { id: 'A1.3 (★★★) ', text: 'Existe-t-il une corrélation entre les indicateurs académiques (GPA, SAT, classement) et le niveau de satisfaction professionnelle ?' },
-    { id: '', text: '' },
-    { id: '', text: '' }
+    { id: 'A1.3 (★★★) ', text: 'Is there a correlation between academic indicators (GPA, SAT, ranking) and the job level?' },
+    { id: 'A1.4 (★★☆)', text: 'How do academic indicators influence the average time required to get a promotion?' },
   ];
+  
 
   Answers3 = [
-    { id: '', text: '' },
-    { id: '', text: '' },
-    { id: '', text: '' }
+    { id: 'A1.3 (★★★) ', text: 'There is no correlation' },
+    { id: 'A1.4 (★★☆)', text: 'They do not seem to influence the average time to get a promotion' },
   ];
 
   Questions4 = [
