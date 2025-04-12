@@ -65,8 +65,8 @@ export class MainPageComponent {
   ];
 
   Questions5 = [
-    { id: '', text: '' },
-    { id: '', text: '' },
+    { id: 'A4.1 (★★☆)', text: 'Comment les indicateurs académiques influencent-ils le temps moyen nécessaire pour obtenir une promotion ?' },
+    { id: 'A4.2 (★★☆)', text: 'Est-ce que le nombre d’années avant la première promotion est relié à la satisfaction de l’équilibre vie privée et professionnelle ?' },
     { id: '', text: '' }
   ];
 
