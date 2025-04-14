@@ -7,6 +7,7 @@ import { Visual2Component } from "@app/components/d3/visual-2/visual-2.component
 import { Visual3Component } from "@app/components/d3/visual-3/visual-3.component";
 import { Visual4Component } from "@app/components/d3/visual-4/visual-4.component";
 import { Visual5Component } from "@app/components/d3/visual-5/visual-5.component";
+import { Visual6Component } from "@app/components/d3/visual-6/visual-6.component";
 // import { ScatterVizComponent } from '@app/components/d3/scatter-viz/scatter-viz.component';
 // import { SankeyVizComponent } from '@app/components/d3/sankey-viz/sankey-viz.component';
 // import { StackedBarVizComponent } from '@app/components/d3/stacked-bar-viz/stacked-bar-viz.component';
@@ -23,6 +24,7 @@ import { Visual5Component } from "@app/components/d3/visual-5/visual-5.component
     Visual3Component,
     Visual4Component,
     Visual5Component,
+    Visual6Component,
   ],
   templateUrl: "./main-page.component.html",
   styleUrls: ["./main-page.component.scss"],
@@ -55,18 +57,9 @@ export class MainPageComponent {
   ];
 
   Questions3 = [
-    {
-      id: "A3.1 (★★★)",
-      text: "Existe-t-il des différences dans les résultats professionnels selon le domaine d’études choisi ",
-    },
-    {
-      id: "A3.2 (★★☆) ",
-      text: "Les variables démographiques, telles que l’âge et le genre, influencent t-elles le salaire initial?",
-    },
-    {
-      id: "A3.3 (★☆) s",
-      text: "Les variables démographiques, telles que l’âge et le genre, influencent t-elles la performance académique?",
-    },
+    { id: "", text: "" },
+    { id: "", text: "" },
+    { id: "", text: "" },
   ];
 
   Answers3 = [
@@ -94,6 +87,27 @@ export class MainPageComponent {
   ];
 
   Answers5 = [
+    { id: "", text: "" },
+    { id: "", text: "" },
+    { id: "", text: "" },
+  ];
+
+  Questions6 = [
+    {
+      id: "A3.1 (★★★)",
+      text: "Existe-t-il des différences dans les résultats professionnels selon le domaine d’études choisi ",
+    },
+    {
+      id: "A3.2 (★★☆) ",
+      text: "Les variables démographiques, telles que l’âge et le genre, influencent t-elles le salaire initial?",
+    },
+    {
+      id: "A3.3 (★☆) s",
+      text: "Les variables démographiques, telles que l’âge et le genre, influencent t-elles la performance académique?",
+    },
+  ];
+
+  Answers6= [
     { id: "", text: "" },
     { id: "", text: "" },
     { id: "", text: "" },
