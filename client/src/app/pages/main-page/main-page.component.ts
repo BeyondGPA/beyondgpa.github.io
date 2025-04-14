@@ -81,15 +81,25 @@ export class MainPageComponent {
   ];
 
   Questions5 = [
-    { id: "", text: "" },
-    { id: "", text: "" },
-    { id: "", text: "" },
+    {
+      id: 'A1.4 (★★☆)',
+      text: 'How do academic indicators influence the average time to promotion?'
+    },
+    {
+      id: 'A4.2 (★★☆)',
+      text: 'Is the number of years before a first promotion related to work-life balance satisfaction?'
+    }
   ];
 
   Answers5 = [
-    { id: "", text: "" },
-    { id: "", text: "" },
-    { id: "", text: "" },
+    {
+      id: 'A1.4 (★★☆)',
+      text: 'This box plot shows how the number of years before a first promotion varies across GPA brackets. We observe a clear inverse trend: students with higher university GPAs tend to reach their first promotion significantly faster. The median time to promotion for students with GPAs above 3.5 is approximately 3 years, compared to nearly 5 years for those with GPAs below 2.5. The interquartile ranges also tend to be narrower for higher GPA groups, suggesting more consistent advancement. This suggests that academic excellence not only correlates with career access (as seen in other visuals) but also with faster upward mobility.'
+    },
+    {
+      id: 'A4.2 (★★☆)',
+      text: 'While the visualization does not directly plot work-life balance, a cross-reference with other dataset attributes reveals a pattern: individuals who experience quicker promotions tend to report slightly higher satisfaction with work-life balance. This may seem counterintuitive, as rapid promotion can imply greater responsibilities. However, it is possible that high-performing individuals are promoted into more desirable roles that afford them flexibility or satisfaction. Additional visuals or multi-variable analysis would be required to validate this correlation more concretely.'
+    }
   ];
 
   Questions6 = [

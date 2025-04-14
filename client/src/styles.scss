@@ -47,17 +47,17 @@
   --footer-text: #888;
 }
 
-[data="light"] {
-  --primary-color: #dddddd;
-  --secondary-color: #cdcdcd;
-  --tertiary-color: #9a9a9a;
-  --quaternary-color: #8a8a8a;
-  --background-color: #dddddd83;
-  --viz-background-color: #e4e4e46f;
-  --viz-section-color: #69696914;
-  --text-color: #333333;
-  --highlight-color: #d94560;
-  --footer-text: #2d2d2d;
+[data='light'] {
+    --primary-color: #dddddd;
+    --secondary-color: #cdcdcd;
+    --tertiary-color: #9a9a9a;
+    --quaternary-color: #d7d7d7;
+    --background-color: #dddddd83;
+    --viz-background-color: #b1b1b1c4;
+    --viz-section-color: #e3e3e3;
+    --text-color: #333333;
+    --highlight-color: #d94560;
+    --footer-text: #616161;
 }
 
 html,
@@ -69,19 +69,19 @@ body {
 }
 
 body {
-  font-family: "Inter", Roboto, "Helvetica Neue", sans-serif;
-  background-color: var(--primary-color);
-  background-image: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--secondary-color),
-    var(--tertiary-color),
-    var(--quaternary-color)
-  );
-  background-size: 300% 300%;
-  background-repeat: no-repeat;
-  animation: gradientAnimation 12s ease infinite;
-  color: var(--text-color);
+    font-family: 'Lucida Console', Monaco, monospace;
+    background-color: var(--primary-color);
+    background-image: linear-gradient(
+        135deg, 
+        var(--primary-color), 
+        var(--secondary-color), 
+        var(--tertiary-color), 
+        var(--quaternary-color)
+    );
+    background-size: 300% 300%;
+    background-repeat: no-repeat;
+    animation: gradientAnimation 12s ease infinite;
+    color: var(--text-color);
 }
 
 body::-webkit-scrollbar {
@@ -102,4 +102,33 @@ body::-webkit-scrollbar {
 
 text {
   fill: var(--text-color) !important;
+}
+
+.tooltip-boxplot {
+  position: absolute;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.median-pulse {
+  animation: pulseLine 2s infinite ease-in-out;
+}
+
+@keyframes pulseLine {
+  0%, 100% {
+    stroke-width: 2;
+  }
+  50% {
+    stroke-width: 4;
+  }
+}
+
+line {
+    stroke: var(--text-color);
 }
