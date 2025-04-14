@@ -1,18 +1,18 @@
 <div class="container">
-  <select [(ngModel)]="leftSelected" (change)="renderSankey()">
-    <option value="rank">University Rank</option>
-    <option value="sat">SatScore</option>
-    <option value="gpa">GPA</option>
-  </select>
+  <div class="options">
+    <select [(ngModel)]="leftSelected" (change)="renderSankey()">
+      <option value="rank">University Rank</option>
+      <option value="sat">SatScore</option>
+      <option value="gpa">GPA</option>
+    </select>
 
-  <select [(ngModel)]="selectedCategory" (change)="renderSankey()">
-    <option value="promotion">Years to Promotion</option>
-    <option value="jobLevel">Current Job Level</option>
-  </select>
-  
-  <div #chart class="sankey-container"></div>
-  
+    <select [(ngModel)]="selectedCategory" (change)="renderSankey()">
+      <option value="promotion">Years to Promotion</option>
+      <option value="jobLevel">Current Job Level</option>
+    </select>
+  </div>
 
-  <!-- The div where the Sankey diagram will be rendered -->
-  <div #chart class="sankey-container"></div>
+  <div class="chart-container">
+    <div #chart></div>
+  </div>
 </div>

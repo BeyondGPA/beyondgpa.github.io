@@ -4,7 +4,6 @@ import * as d3Sankey from 'd3-sankey';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '@app/services/data/data.service';
 
-
 @Component({
   standalone: true,
   selector: 'app-visual-3',
@@ -15,82 +14,58 @@ import { DataService } from '@app/services/data/data.service';
 export class Visual3Component implements AfterViewInit {
   @ViewChild('chart') chartContainer!: ElementRef;
   data: any[] = [];
-  gpaCount: any = {};
+
   gpaGroups: string[] = ["2-2.5", "2.5-3.0", "3.0-3.5", "3.5-4.0"];
-satGroups: string[] = ["1-600", "601-1000", "1001-1300", "1301-1600"];
-rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
+  satGroups: string[] = ["1-600", "601-1000", "1001-1300", "1301-1600"];
+  rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
 
   selectedCategory: 'promotion' | 'jobLevel' = 'promotion';
-  leftSelected: 'gpa' | 'sat' | 'rank' = 'gpa'; 
-  satCount: any = {};
-  rankCount: any = {};
-
-
+  leftSelected: 'gpa' | 'sat' | 'rank' = 'gpa';
 
   constructor(private dataService: DataService) {}
 
-  
-  processData(): void {
-    this.data = this.data.map(student => ({
-      ...student,
-      GPA_Group: this.getGPAGroup(+student.University_GPA),
-      SAT_Group: this.getSATGroup(+student.SAT_Score),
-      University_Rank_Group: this.getUniversityRankGroup(+student.University_Ranking),
-    }));
-  
-    console.log("Processed Data:", this.data.slice(0, 10)); // Log to check if groups are assigned correctly
-  }
-  
-  
-
-
   ngAfterViewInit(): void {
     this.dataService.loadCareerData().then(data => {
-      this.data = data;
+      this.data = data.map(student => ({
+        ...student,
+        GPA_Group: this.getGPAGroup(+student.University_GPA),
+        SAT_Group: this.getSATGroup(+student.SAT_Score),
+        University_Rank_Group: this.getUniversityRankGroup(+student.University_Ranking),
+      }));
       this.renderSankey();
     });
-    console.log(this.chartContainer.nativeElement);
-
   }
-    
-  renderSankey(): void {
-    // Clear previous chart
-    d3.select(this.chartContainer.nativeElement).selectAll("svg").remove();
-    
 
-    // Prepare data for the Sankey diagram
+  renderSankey(): void {
+    d3.select(this.chartContainer.nativeElement).selectAll("svg").remove();
     const sankeyData = this.processDataForSankey(this.selectedCategory);
 
-    const width = 800;
-    const height = 600;
+    const width = 600;
+    const height = 400;
 
-    // Create the SVG element for the Sankey diagram
     const svg = d3.select(this.chartContainer.nativeElement)
       .append('svg')
-      .attr('width', width)
-      .attr('height', height)
       .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .attr("width", width)
+      .attr("height", height)
+      .style('display', 'block')
       .style('max-width', '100%')
-      .style('height', 'auto');
 
-    // Define Sankey layout
     const sankey = d3Sankey.sankey()
       .nodeWidth(15)
       .nodePadding(10)
       .extent([[1, 1], [width - 1, height - 5]]);
 
-    const { nodes, links } = sankey(sankeyData) as { nodes: Array<{ name: string } & d3Sankey.SankeyNodeMinimal<{}, {}>>, links: d3Sankey.SankeyLinkMinimal<{}, {}>[] };
-    console.log("Nodes:", nodes);
-    console.log("Links:", links);
+    const { nodes, links } = sankey(sankeyData) as {
+      nodes: Array<{ name: string } & d3Sankey.SankeyNodeMinimal<{}, {}>>,
+      links: d3Sankey.SankeyLinkMinimal<{}, {}>[]
+    };
 
-    // Define a color scale for GPA groups
     const gpaGroups = ["Low", "Medium-Low", "Medium-High", "High"];
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(gpaGroups);
-
-    // Create a lookup for node names
     const nodeMap = new Map(nodes.map(d => [d.name, d]));
 
-    // Draw links (flows)
     svg.append("g")
       .selectAll(".link")
       .data(links)
@@ -99,13 +74,12 @@ rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
       .attr("d", d3Sankey.sankeyLinkHorizontal())
       .attr("stroke-width", d => Math.max(1, d.width ?? 0))
       .style("stroke", d => {
-          const sourceNode = typeof d.source === 'object' && 'name' in d.source ? nodeMap.get((d.source as { name: string }).name) : undefined;
-          return sourceNode ? colorScale(sourceNode.name) : "#999"; // Assign color based on GPA group
+        const sourceNode = typeof d.source === 'object' && 'name' in d.source ? nodeMap.get((d.source as { name: string }).name) : undefined;
+        return sourceNode ? colorScale(sourceNode.name) : "#999";
       })
       .style("fill", "none")
       .style("opacity", 0.7);
 
-    // Draw nodes
     svg.append("g")
       .selectAll(".node")
       .data(nodes)
@@ -115,69 +89,63 @@ rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
       .call(g => g.append("rect")
         .attr("height", d => (d.y1 ?? 0) - (d.y0 ?? 0))
         .attr("width", d => (d.x1 ?? 0) - (d.x0 ?? 0))
-        .style("fill", d => colorScale(d.name) || "#ddd") // Use same color for GPA nodes
+        .style("fill", d => colorScale(d.name) || "#ddd")
       );
 
-    // Add labels to nodes
-    // Add labels to nodes
     svg.append("g")
-    .selectAll(".node")
-    .data(nodes)
-    .join("g")
-    .attr("class", "node")
-    .attr("transform", d => `translate(${d.x0},${d.y0})`)
-    .call(g => g.append("text")
-    .attr("x", d => ((d.x0 ?? 0) < width / 2) ? ((d.x1 ?? 0) - (d.x0 ?? 0)) + 16 : -86)
-    // Push right for left-side nodes, left for right-side
-      .attr("y", d => ((d.y1 ?? 0) - (d.y0 ?? 0)) / 2 + 5) // Center vertically
-      .attr("dy", "0.35em")
-      .attr("text-anchor", d => (d.x0 ?? 0 < width / 2) ? "start" : "end") // Align text correctly
-      .text(d => d.name)
-      .style("font-size", "20px") // Ensure readability
-      .style("fill", "#000") // Ensure contrast
-      .style("font-weight", "bold")
-    );
-
-}
-
+      .selectAll(".node")
+      .data(nodes)
+      .join("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.x0},${d.y0})`)
+      .call(g => g.append("text")
+        .attr("x", d => {
+          const isLeft = (d.x0 ?? 0) < width / 2;
+          const nodeWidth = (d.x1 ?? 0) - (d.x0 ?? 0);
+          const nameLength = d.name.length;
+          return isLeft ? nodeWidth + 12 : -10 - nameLength * 6;
+        })
+        .attr("y", d => ((d.y1 ?? 0) - (d.y0 ?? 0)) / 2 + 5)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", d => (d.x0 ?? 0) < width / 2 ? "start" : "end")
+        .text(d => d.name)
+        .style("font-size", "14px")
+        .style("fill", "#000")
+        .style("font-weight", "bold")
+      );
+  }
 
   processDataForSankey(selectedCategory: 'Rank' | 'promotion' | 'jobLevel'): any {
     const links: { source: number; target: number; value: number }[] = [];
     const nodes: { name: string }[] = [];
 
     const leftSideGroups = this.leftSelected === 'gpa' 
-  ? this.gpaGroups 
-  : this.leftSelected === 'sat' 
-    ? this.satGroups 
-    : this.rankGroups;
+      ? this.gpaGroups 
+      : this.leftSelected === 'sat' 
+        ? this.satGroups 
+        : this.rankGroups;
 
-
-    // Determine right-side groups
     const rightSideGroups = selectedCategory === 'Rank' 
       ? this.rankGroups 
       : selectedCategory === 'promotion' 
-        ? ["1rst year", "2nd year", "3rd year", "4rt year", "5fth year +"] 
+        ? ["Year 1", "Year 2", "Year 3", "Year 4", "Year 5+"] 
         : ["Entry", "Mid", "Senior"];
 
-    // Create nodes for left and right values
     leftSideGroups.forEach(group => nodes.push({ name: group }));
     rightSideGroups.forEach(group => nodes.push({ name: group }));
 
-    // Create links based on data
     leftSideGroups.forEach((leftGroup, leftIndex) => {
       rightSideGroups.forEach((rightGroup, rightIndex) => {
-        const link = {
+        links.push({
           source: leftIndex,
           target: leftSideGroups.length + rightIndex,
           value: this.calculateGroupFlow(leftGroup, rightGroup, selectedCategory)
-        };
-        links.push(link);
+        });
       });
     });
 
     return { nodes, links };
   }
-  // Calculate the flow between left and right groups based on selected category  
 
   calculateGroupFlow(leftGroup: string, rightGroup: string, category: 'Rank' | 'promotion' | 'jobLevel'): number {
     return this.data.filter(d => {
@@ -186,18 +154,16 @@ rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
         : this.leftSelected === 'sat' 
           ? this.getSATGroup(parseInt(d['SAT_Score'])) 
           : this.getUniversityRankGroup(parseInt(d['University_Ranking']));
-  
+
       const rightValue = category === 'Rank'
         ? this.getUniversityRankGroup(parseInt(d['University_Ranking']))
         : category === 'promotion'
           ? this.getPromotionGroup(parseInt(d['Years_to_Promotion']))
-          : d['Current_Job_Level']; // Directly using Job Level
-  
+          : d['Current_Job_Level'];
+
       return leftValue === leftGroup && rightValue === rightGroup;
     }).length;
   }
-  
-
 
   getGPAGroup(gpa: number): string {
     if (gpa >= 2.0 && gpa < 2.5) return "2-2.5";
@@ -206,7 +172,7 @@ rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
     if (gpa >= 3.5 && gpa <= 4.0) return "3.5-4.0";
     return "Unknown";
   }
-  
+
   getSATGroup(sat: number): string {
     if (sat >= 1 && sat <= 600) return "1-600";
     if (sat > 600 && sat <= 1000) return "601-1000";
@@ -214,8 +180,7 @@ rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
     if (sat > 1300 && sat <= 1600) return "1301-1600";
     return "Unknown";
   }
-  
-  
+
   getUniversityRankGroup(rank: number): string {
     if (rank >= 1 && rank <= 200) return "1-200";
     if (rank > 200 && rank <= 400) return "201-400";
@@ -224,15 +189,12 @@ rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
     if (rank > 800 && rank <= 1000) return "801-1000";
     return "Unknown";
   }
-  
 
   getPromotionGroup(years: number): string {
-    if (years === 1) return "1rst year";
-    if (years === 2) return "2nd year";
-    if (years === 3) return "3rd year";
-    if (years === 4) return "4rt year";
-    return "5fth year +";  // 5+ years
+    if (years === 1) return "Year 1";
+    if (years === 2) return "Year 2";
+    if (years === 3) return "Year 3";
+    if (years === 4) return "Year 4";
+    return "Year 5+";
   }
-  
-
 }
