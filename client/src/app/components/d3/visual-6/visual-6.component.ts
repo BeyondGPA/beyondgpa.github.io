@@ -1,4 +1,4 @@
-// Visual6Component - Fixed tooltip scope per chart and added axes labels
+// Visual6Component - Delays rendering until chart enters view
 
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
@@ -18,14 +18,22 @@ export class Visual6Component implements AfterViewInit {
   constructor(private dataService: DataService) {}
 
   ngAfterViewInit(): void {
-    this.dataService.loadCareerData().then(data => {
-      const male = data.filter(d => d.Gender === 'Male');
-      const female = data.filter(d => d.Gender === 'Female');
+    const observer = new IntersectionObserver(entries => {
+      const entry = entries[0];
+      if (entry.isIntersecting) {
+        observer.disconnect();
+        this.dataService.loadCareerData().then(data => {
+          const male = data.filter(d => d.Gender === 'Male');
+          const female = data.filter(d => d.Gender === 'Female');
 
-      this.renderLineChart(male, female, 'Starting_Salary', this.salaryChart, 'Salaire initial');
-      this.renderLineChart(male, female, 'Career_Satisfaction', this.satisfactionChart, 'Satisfaction professionnelle');
-      this.renderLineChart(male, female, 'Work_Life_Balance', this.equilibreChart, 'Équilibre vie pro/perso');
-    });
+          this.renderLineChart(male, female, 'Starting_Salary', this.salaryChart, 'Salaire initial');
+          this.renderLineChart(male, female, 'Career_Satisfaction', this.satisfactionChart, 'Satisfaction professionnelle');
+          this.renderLineChart(male, female, 'Work_Life_Balance', this.equilibreChart, 'Équilibre vie pro/perso');
+        });
+      }
+    }, { threshold: 0.3 });
+
+    observer.observe(this.salaryChart.nativeElement);
   }
 
   renderLineChart(male: any[], female: any[], metric: string, container: ElementRef, title: string): void {
