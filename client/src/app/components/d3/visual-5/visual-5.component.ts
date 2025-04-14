@@ -37,8 +37,12 @@ export class Visual5Component implements AfterViewInit {
     const container = d3.select(this.chartContainer.nativeElement);
     const svg = container
       .append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
+      .attr("viewBox", `0 0 ${width + 50} ${height + 50}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .attr("width", width)
+      .attr("height", height)
+      .style('display', 'block')
+      .style('max-width', '100%')
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
