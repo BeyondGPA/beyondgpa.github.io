@@ -37,8 +37,12 @@ export class Visual5Component implements AfterViewInit {
     const container = d3.select(this.chartContainer.nativeElement);
     const svg = container
       .append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
+      .attr("viewBox", `0 0 ${width + 50} ${height + 75}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .attr("width", width)
+      .attr("height", height)
+      .style('display', 'block')
+      .style('max-width', '100%')
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -85,6 +89,7 @@ export class Visual5Component implements AfterViewInit {
     const tooltip = d3.select('body')
       .append('div')
       .attr('class', 'tooltip-boxplot')
+      .style('display', 'None')
       .style('position', 'absolute')
       .style('background', 'rgba(0,0,0,0.75)')
       .style('color', '#fff')
@@ -119,6 +124,7 @@ export class Visual5Component implements AfterViewInit {
             .style('left', event.pageX + 12 + 'px')
             .style('top', event.pageY - 30 + 'px')
             .style('opacity', 1)
+            .style('display', 'Block')
             .html(`
               <strong>GPA:</strong> ${d.gpa}<br>
               Q1: ${d.q1}<br>

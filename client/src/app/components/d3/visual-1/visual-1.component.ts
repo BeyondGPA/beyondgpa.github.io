@@ -2,6 +2,17 @@ import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 import { DataService } from '@app/services/data/data.service';
 
+interface BoxPlotStatistics {
+  jobLevel: string;
+  q1: number;
+  median: number;
+  q3: number;
+  min: number;
+  max: number;
+  outliers: number[];
+  values: number[];
+}
+
 @Component({
   standalone: true,
   selector: 'app-visual-1',
@@ -12,160 +23,207 @@ export class Visual1Component implements AfterViewInit {
   @ViewChild('chart') chartContainer!: ElementRef;
 
   constructor(private dataService: DataService) {}
-
+  
   ngAfterViewInit(): void {
     this.dataService.loadCareerData().then(data => {
-      this.renderChart(data);
+      const processedData = this.processData(data);
+      this.renderChart(data, processedData);
     });
   }
 
-  renderChart(data: any[]): void {
-    // --- Data Aggregation into 10 GPA Bins ---
-    // Extract GPA values.
-    const gpaValues = data.map(d => +d.University_GPA);
-    const [minGPA, maxGPA] = d3.extent(gpaValues) as [number, number];
-    const binCount = 10;
-    // Create 11 threshold values (bin boundaries).
-    const binThresholds = d3.range(binCount + 1).map(i => minGPA + (maxGPA - minGPA) * (i / binCount));
-    // Create labels, e.g. "2.5 - 2.8".
-    const labels = binThresholds.slice(0, binCount).map((t, i) =>
-      `${t.toFixed(1)} - ${binThresholds[i + 1].toFixed(1)}`
-    );
-
-    // Initialize 10 bins.
-    const bins = Array.from({ length: binCount }, () => ({ salarySum: 0, offersSum: 0, count: 0 }));
-    data.forEach(d => {
-      const gpa = +d.University_GPA;
-      // if GPA equals max, force it into the last bin.
-      const binIndex = (gpa === maxGPA)
-        ? binCount - 1
-        : Math.floor((gpa - minGPA) / ((maxGPA - minGPA) / binCount));
-      bins[binIndex].salarySum += +d.Starting_Salary;
-      bins[binIndex].offersSum += +d.Job_Offers;
-      bins[binIndex].count++;
-    });
-    // Compute average salary and offers for each bin.
-    const avgSalary = bins.map(bin => bin.count ? bin.salarySum / bin.count : 0);
-    const avgOffers = bins.map(bin => bin.count ? bin.offersSum / bin.count : 0);
-    // Scale salary down by 10,000.
-    const salaryData = avgSalary.map(s => s / 10000);
-    // Our two series: starting salary and job offers.
-    const seriesData = [salaryData, avgOffers];
-    const n = seriesData.length;  // 2 series
-    // const m = binCount;           // 10 bins
-
-    // --- Adjusted Dimensions (e.g., 600×400) ---
-    const width = 600;
-    const height = 400;
-    const marginTop = 0;
-    const marginRight = 0;
-    const marginBottom = 10;
-    const marginLeft = 0;
-
-    // x-scale: use the computed bin labels.
-    const x = d3.scaleBand<string>()
-      .domain(labels)
-      .rangeRound([marginLeft, width - marginRight])
-      .padding(0.08);
-
-    // Prepare stacked data.
-    // For d3.stack, we need to convert each bin's series into an object with keys.
-    const keys = d3.range(n).map(String);
-    const transposed = d3.transpose(seriesData) as number[][];
-    const stackedData = d3.stack()
-      .keys(keys)
-      (transposed.map(d => {
-        const obj: { [key: string]: number } = {};
-        d.forEach((value, i) => { obj[keys[i]] = value; });
-        return obj;
-      }))
-      .map((data, i) =>
-        data.map((d: d3.SeriesPoint<{ [key: string]: number }>) => [d[0], d[1], i] as [number, number, number])
-      );
+  processData(data: any[]): BoxPlotStatistics[] {
+    // Group the data by job level
+    const groupedData : Record<string, number[]> = {};
+    data.forEach(item => {
+      const jobLevel = item.Current_Job_Level;
+      const gpa = item.University_GPA;
       
-    const yMaxStacked = d3.max(stackedData, series => d3.max(series, d => d[1]))!;
-    const y = d3.scaleLinear()
-      .domain([0, yMaxStacked])
-      .range([height - marginBottom, marginTop]);
+      if (!groupedData[jobLevel]) {
+        groupedData[jobLevel] = [];
+      }
+      groupedData[jobLevel].push(gpa);
+    });
 
-    const color = d3.scaleSequential(d3.interpolateViridis)
-      .domain([-0.5 * n, 1.5 * n]);
+    // Convert to the format needed for the box plot
+    const processedData = Object.keys(groupedData).map(jobLevel => ({
+      jobLevel: jobLevel,
+      values: groupedData[jobLevel]
+    }));
 
-    // --- Create the SVG and Draw the Bars ---
+    // Sort the job levels
+    processedData.sort((a, b) => b.values.length - a.values.length);
+
+    processedData.forEach(d => {
+      d.values = d.values.map(v => +v); // Convert GPA values to numbers
+      d.values.sort(d3.ascending); // Sort the values for each job level
+    });
+
+    return processedData.map(d => {
+      const q1 = d3.quantile(d.values, 0.25) as number;
+      const median = d3.quantile(d.values, 0.5) as number;
+      const q3 = d3.quantile(d.values, 0.75) as number;
+      const iqr = q3 - q1;
+      const min = Math.max(d.values[0], q1 - 1.5 * iqr);
+      const max = Math.min(d.values[d.values.length - 1], q3 + 1.5 * iqr);
+      
+      const outliers = d.values.filter(v => v < min || v > max);
+      
+      return {
+          jobLevel: d.jobLevel,
+          q1,
+          median,
+          q3,
+          min,
+          max,
+          outliers,
+          values: d.values
+      };
+    });
+  }
+
+  renderChart(data: any[], boxPlotData: BoxPlotStatistics[]): void {
+    // Set up dimensions
+    const margin = {top: 50, right: 30, bottom: 50, left: 50};
+    const width = 600 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    // Create SVG
     const svg = d3.select(this.chartContainer.nativeElement)
       .append("svg")
-      .attr("viewBox", `0 -25 ${width} ${height + 50}`)
-      .attr("width", width)
-      .attr("height", height)
-      .attr("style", "max-width: 100%; height: auto;");
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const rect = svg.selectAll("g")
-      .data(stackedData)
-      .join("g")
-        .attr("fill", (_d, i) => color(i))
-      .selectAll("rect")
-      .data(d => d)
-      .join("rect")
-        // For x, we use the index of the bin to match the labels array.
-        .attr("x", (_d, i) => x(labels[i])!)
-        .attr("y", height - marginBottom)
-        .attr("width", x.bandwidth())
-        .attr("height", 0);
+    // Add title
+    svg.append("text")
+      .attr("class", "title")
+      .attr("x", width / 2)
+      .attr("y", -20)
+      .text("University GPA Distribution by Job Level");
 
-    svg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(d3.axisBottom(x).tickSizeOuter(0));
+    // X scale - job levels
+    const jobLevels = boxPlotData.map(d => d.jobLevel);
+    const xScale = d3.scaleBand()
+      .domain(jobLevels)
+      .range([0, width])
+      .padding(0.2);
 
-    // --- Transition Functions ---
-    function transitionGrouped() {
-      // For grouped view, use maximum among individual metrics.
-      y.domain([0, d3.max(seriesData, series => d3.max(series))!]);
-      rect.transition()
-        .duration(500)
-        .delay((d: unknown, i: number) => i * 20)
-        .attr("x", (d: unknown, i: number) => {
-          const dd = d as [number, number, number];
-          return x(labels[i])! + x.bandwidth() / n * dd[2];
-        })
-        .attr("width", x.bandwidth() / n)
-      .transition()
-        .attr("y", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(dd[1] - dd[0]);
-        })
-        .attr("height", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(0) - y(dd[1] - dd[0]);
+    const colorScale = d3.scaleOrdinal<string>()
+      .domain(jobLevels)
+      .range([
+        "#FFEEEE",  // Very light red (Entry)
+        "#FFAAAA",  // Light coral (Mid)
+        "#FF6B6B",  // Medium coral (Senior)
+        "#E31937"   // Rich crimson (Executive)
+      ]);
+
+    // Y scale - GPA
+    const maxGPA = d3.max(data, d => +d.University_GPA) as number;
+    const yScale = d3.scaleLinear()
+      .domain([0, maxGPA])
+      .range([height, 0])
+      .nice();
+
+    // Draw boxes
+    svg.selectAll(".box")
+      .data(boxPlotData)
+      .enter()
+      .append("rect")
+      .attr("class", "box")
+      .attr("x", d => xScale(d.jobLevel) ?? 0)
+      .attr("y", d => yScale(d.q3))
+      .attr("width", xScale.bandwidth())
+      .attr("height", d => yScale(d.q1) - yScale(d.q3))
+      .attr("rx", 2)
+      .attr("ry", 2)
+      .attr('fill', d => colorScale(d.jobLevel))
+
+    // Draw median lines
+    svg.selectAll(".median")
+        .data(boxPlotData)
+        .enter()
+        .append("line")
+        .attr("class", "median")
+        .attr("x1", d => xScale(d.jobLevel) ?? 0)
+        .attr("x2", d => (xScale(d.jobLevel) ?? 0) + xScale.bandwidth())
+        .attr("y1", d => yScale(d.median))
+        .attr("y2", d => yScale(d.median))
+
+    // Draw whiskers
+    svg.selectAll(".whisker")
+        .data(boxPlotData)
+        .enter()
+        .each(function(d) {
+            const centerX = (xScale(d.jobLevel) ?? 0) + xScale.bandwidth() / 2;
+            
+            // Bottom whisker
+            d3.select(this)
+                .append("line")
+                .attr("class", "whisker")
+                .attr("x1", centerX)
+                .attr("x2", centerX)
+                .attr("y1", yScale(d.max))
+                .attr("y2", yScale(d.q3))
+            
+            // Top whisker
+            d3.select(this)
+                .append("line")
+                .attr("class", "whisker")
+                .attr("x1", centerX)
+                .attr("x2", centerX)
+                .attr("y1", yScale(d.q1))
+                .attr("y2", yScale(d.min))
+            
+            // Bottom cap
+            d3.select(this)
+                .append("line")
+                .attr("class", "whisker")
+                .attr("x1", centerX - 5)
+                .attr("x2", centerX + 5)
+                .attr("y1", yScale(d.max))
+                .attr("y2", yScale(d.max))
+            
+            // Top cap
+            d3.select(this)
+                .append("line")
+                .attr("class", "whisker")
+                .attr("x1", centerX - 5)
+                .attr("x2", centerX + 5)
+                .attr("y1", yScale(d.min))
+                .attr("y2", yScale(d.min))
         });
-    }
 
-    function transitionStacked() {
-      y.domain([0, yMaxStacked]);
-      rect.transition()
-        .duration(500)
-        .delay((d: unknown, i: number) => i * 20)
-        .attr("y", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(dd[1]);
-        })
-        .attr("height", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(dd[0]) - y(dd[1]);
-        })
-      .transition()
-        .attr("x", (d: unknown, i: number) => x(labels[i])!)
-        .attr("width", x.bandwidth());
-    }
+    // Draw outliers
+    // svg.selectAll(".outlier")
+    //     .data(boxPlotData.flatMap(d => 
+    //         d.outliers.map(v => ({ jobLevel: d.jobLevel, value: v }))
+    //     ))
+    //     .enter()
+    //     .append("circle")
+    //     .attr("class", "outlier")
+    //     .attr("cx", d => (xScale(d.jobLevel) || 0) + xScale.bandwidth() / 2)
+    //     .attr("cy", d => yScale(d.value))
+    //     .attr("r", 3);
 
-    function update(layout: "stacked" | "grouped") {
-      if (layout === "stacked") transitionStacked();
-      else transitionGrouped();
-    }
+    // Add X axis
+    svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(xScale))
+        .append("text")
+        .attr("class", "axis-label")
+        .attr("x", width / 2)
+        .attr("y", 35)
+        .text("Current Job Level");
 
-    let currentLayout: "stacked" | "grouped" = "stacked";
-    setInterval(() => {
-      currentLayout = currentLayout === "stacked" ? "grouped" : "stacked";
-      update(currentLayout);
-    }, 2000);
-  }
+    // Add Y axis
+    svg.append("g")
+        .call(d3.axisLeft(yScale))
+        .append("text")
+        .attr("class", "axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -40)
+        .attr("x", -height / 2)
+        .text("University GPA");
+    }
 }
