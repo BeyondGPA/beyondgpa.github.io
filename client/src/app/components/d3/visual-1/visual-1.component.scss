@@ -1,24 +1,15 @@
 :host ::ng-deep {
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-    .box {
-        stroke: #000;
-        stroke-width: 1px;
-        opacity: 0.7;
-    }
     .median {
-        stroke: #000;
+        stroke: var(--text-color);
         stroke-width: 2px;
     }
     .whisker {
-        stroke: #000;
+        stroke: var(--text-color);
         stroke-width: 1px;
     }
     .outlier {
         fill: #ff7f0e;
-        stroke: #000;
+        stroke: var(--text-color);
         stroke-width: 1px;
     }
     .axis-label {
