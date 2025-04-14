@@ -1,171 +1,200 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
+import * as d3Sankey from 'd3-sankey';
+import { FormsModule } from '@angular/forms';
 import { DataService } from '@app/services/data/data.service';
 
 @Component({
   standalone: true,
   selector: 'app-visual-3',
   templateUrl: './visual-3.component.html',
+  imports: [FormsModule],
   styleUrls: ['./visual-3.component.scss']
 })
 export class Visual3Component implements AfterViewInit {
   @ViewChild('chart') chartContainer!: ElementRef;
+  data: any[] = [];
+
+  gpaGroups: string[] = ["2-2.5", "2.5-3.0", "3.0-3.5", "3.5-4.0"];
+  satGroups: string[] = ["1-600", "601-1000", "1001-1300", "1301-1600"];
+  rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
+
+  selectedCategory: 'promotion' | 'jobLevel' = 'promotion';
+  leftSelected: 'gpa' | 'sat' | 'rank' = 'gpa';
 
   constructor(private dataService: DataService) {}
 
   ngAfterViewInit(): void {
     this.dataService.loadCareerData().then(data => {
-      this.renderChart(data);
+      this.data = data.map(student => ({
+        ...student,
+        GPA_Group: this.getGPAGroup(+student.University_GPA),
+        SAT_Group: this.getSATGroup(+student.SAT_Score),
+        University_Rank_Group: this.getUniversityRankGroup(+student.University_Ranking),
+      }));
+      this.renderSankey();
     });
   }
 
-  renderChart(data: any[]): void {
-    // --- Data Aggregation into 10 GPA Bins ---
-    // Extract GPA values.
-    const gpaValues = data.map(d => +d.University_GPA);
-    const [minGPA, maxGPA] = d3.extent(gpaValues) as [number, number];
-    const binCount = 10;
-    // Create 11 threshold values (bin boundaries).
-    const binThresholds = d3.range(binCount + 1).map(i => minGPA + (maxGPA - minGPA) * (i / binCount));
-    // Create labels, e.g. "2.5 - 2.8".
-    const labels = binThresholds.slice(0, binCount).map((t, i) =>
-      `${t.toFixed(1)} - ${binThresholds[i + 1].toFixed(1)}`
-    );
+  renderSankey(): void {
+    d3.select(this.chartContainer.nativeElement).selectAll("svg").remove();
+    const sankeyData = this.processDataForSankey(this.selectedCategory);
 
-    // Initialize 10 bins.
-    const bins = Array.from({ length: binCount }, () => ({ salarySum: 0, offersSum: 0, count: 0 }));
-    data.forEach(d => {
-      const gpa = +d.University_GPA;
-      // if GPA equals max, force it into the last bin.
-      const binIndex = (gpa === maxGPA)
-        ? binCount - 1
-        : Math.floor((gpa - minGPA) / ((maxGPA - minGPA) / binCount));
-      bins[binIndex].salarySum += +d.Starting_Salary;
-      bins[binIndex].offersSum += +d.Job_Offers;
-      bins[binIndex].count++;
-    });
-    // Compute average salary and offers for each bin.
-    const avgSalary = bins.map(bin => bin.count ? bin.salarySum / bin.count : 0);
-    const avgOffers = bins.map(bin => bin.count ? bin.offersSum / bin.count : 0);
-    // Scale salary down by 10,000.
-    const salaryData = avgSalary.map(s => s / 10000);
-    // Our two series: starting salary and job offers.
-    const seriesData = [salaryData, avgOffers];
-    const n = seriesData.length;  // 2 series
-    // const m = binCount;           // 10 bins
-
-    // --- Adjusted Dimensions (e.g., 600×400) ---
     const width = 600;
     const height = 400;
-    const marginTop = 0;
-    const marginRight = 0;
-    const marginBottom = 10;
-    const marginLeft = 0;
 
-    // x-scale: use the computed bin labels.
-    const x = d3.scaleBand<string>()
-      .domain(labels)
-      .rangeRound([marginLeft, width - marginRight])
-      .padding(0.08);
-
-    // Prepare stacked data.
-    // For d3.stack, we need to convert each bin's series into an object with keys.
-    const keys = d3.range(n).map(String);
-    const transposed = d3.transpose(seriesData) as number[][];
-    const stackedData = d3.stack()
-      .keys(keys)
-      (transposed.map(d => {
-        const obj: { [key: string]: number } = {};
-        d.forEach((value, i) => { obj[keys[i]] = value; });
-        return obj;
-      }))
-      .map((data, i) =>
-        data.map((d: d3.SeriesPoint<{ [key: string]: number }>) => [d[0], d[1], i] as [number, number, number])
-      );
-      
-    const yMaxStacked = d3.max(stackedData, series => d3.max(series, d => d[1]))!;
-    const y = d3.scaleLinear()
-      .domain([0, yMaxStacked])
-      .range([height - marginBottom, marginTop]);
-
-    const color = d3.scaleSequential(d3.interpolateViridis)
-      .domain([-0.5 * n, 1.5 * n]);
-
-    // --- Create the SVG and Draw the Bars ---
     const svg = d3.select(this.chartContainer.nativeElement)
-      .append("svg")
-      .attr("viewBox", `0 -25 ${width} ${height + 50}`)
+      .append('svg')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
       .attr("width", width)
       .attr("height", height)
-      .attr("style", "max-width: 100%; height: auto;");
+      .style('display', 'block')
+      .style('max-width', '100%')
 
-    const rect = svg.selectAll("g")
-      .data(stackedData)
-      .join("g")
-        .attr("fill", (_d, i) => color(i))
-      .selectAll("rect")
-      .data(d => d)
-      .join("rect")
-        // For x, we use the index of the bin to match the labels array.
-        .attr("x", (_d, i) => x(labels[i])!)
-        .attr("y", height - marginBottom)
-        .attr("width", x.bandwidth())
-        .attr("height", 0);
+    const sankey = d3Sankey.sankey()
+      .nodeWidth(15)
+      .nodePadding(10)
+      .extent([[1, 1], [width - 1, height - 5]]);
+
+    const { nodes, links } = sankey(sankeyData) as {
+      nodes: Array<{ name: string } & d3Sankey.SankeyNodeMinimal<{}, {}>>,
+      links: d3Sankey.SankeyLinkMinimal<{}, {}>[]
+    };
+
+    const gpaGroups = ["Low", "Medium-Low", "Medium-High", "High"];
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(gpaGroups);
+    const nodeMap = new Map(nodes.map(d => [d.name, d]));
 
     svg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(d3.axisBottom(x).tickSizeOuter(0));
+      .selectAll(".link")
+      .data(links)
+      .join("path")
+      .attr("class", "link")
+      .attr("d", d3Sankey.sankeyLinkHorizontal())
+      .attr("stroke-width", d => Math.max(1, d.width ?? 0))
+      .style("stroke", d => {
+        const sourceNode = typeof d.source === 'object' && 'name' in d.source ? nodeMap.get((d.source as { name: string }).name) : undefined;
+        return sourceNode ? colorScale(sourceNode.name) : "#999";
+      })
+      .style("fill", "none")
+      .style("opacity", 0.7);
 
-    // --- Transition Functions ---
-    function transitionGrouped() {
-      // For grouped view, use maximum among individual metrics.
-      y.domain([0, d3.max(seriesData, series => d3.max(series))!]);
-      rect.transition()
-        .duration(500)
-        .delay((d: unknown, i: number) => i * 20)
-        .attr("x", (d: unknown, i: number) => {
-          const dd = d as [number, number, number];
-          return x(labels[i])! + x.bandwidth() / n * dd[2];
+    svg.append("g")
+      .selectAll(".node")
+      .data(nodes)
+      .join("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.x0},${d.y0})`)
+      .call(g => g.append("rect")
+        .attr("height", d => (d.y1 ?? 0) - (d.y0 ?? 0))
+        .attr("width", d => (d.x1 ?? 0) - (d.x0 ?? 0))
+        .style("fill", d => colorScale(d.name) || "#ddd")
+      );
+
+    svg.append("g")
+      .selectAll(".node")
+      .data(nodes)
+      .join("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.x0},${d.y0})`)
+      .call(g => g.append("text")
+        .attr("x", d => {
+          const isLeft = (d.x0 ?? 0) < width / 2;
+          const nodeWidth = (d.x1 ?? 0) - (d.x0 ?? 0);
+          const nameLength = d.name.length;
+          return isLeft ? nodeWidth + 12 : -10 - nameLength * 6;
         })
-        .attr("width", x.bandwidth() / n)
-      .transition()
-        .attr("y", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(dd[1] - dd[0]);
-        })
-        .attr("height", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(0) - y(dd[1] - dd[0]);
+        .attr("y", d => ((d.y1 ?? 0) - (d.y0 ?? 0)) / 2 + 5)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", d => (d.x0 ?? 0) < width / 2 ? "start" : "end")
+        .text(d => d.name)
+        .style("font-size", "14px")
+        .style("fill", "#000")
+        .style("font-weight", "bold")
+      );
+  }
+
+  processDataForSankey(selectedCategory: 'Rank' | 'promotion' | 'jobLevel'): any {
+    const links: { source: number; target: number; value: number }[] = [];
+    const nodes: { name: string }[] = [];
+
+    const leftSideGroups = this.leftSelected === 'gpa' 
+      ? this.gpaGroups 
+      : this.leftSelected === 'sat' 
+        ? this.satGroups 
+        : this.rankGroups;
+
+    const rightSideGroups = selectedCategory === 'Rank' 
+      ? this.rankGroups 
+      : selectedCategory === 'promotion' 
+        ? ["Year 1", "Year 2", "Year 3", "Year 4", "Year 5+"] 
+        : ["Entry", "Mid", "Senior"];
+
+    leftSideGroups.forEach(group => nodes.push({ name: group }));
+    rightSideGroups.forEach(group => nodes.push({ name: group }));
+
+    leftSideGroups.forEach((leftGroup, leftIndex) => {
+      rightSideGroups.forEach((rightGroup, rightIndex) => {
+        links.push({
+          source: leftIndex,
+          target: leftSideGroups.length + rightIndex,
+          value: this.calculateGroupFlow(leftGroup, rightGroup, selectedCategory)
         });
-    }
+      });
+    });
 
-    function transitionStacked() {
-      y.domain([0, yMaxStacked]);
-      rect.transition()
-        .duration(500)
-        .delay((d: unknown, i: number) => i * 20)
-        .attr("y", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(dd[1]);
-        })
-        .attr("height", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(dd[0]) - y(dd[1]);
-        })
-      .transition()
-        .attr("x", (d: unknown, i: number) => x(labels[i])!)
-        .attr("width", x.bandwidth());
-    }
+    return { nodes, links };
+  }
 
-    function update(layout: "stacked" | "grouped") {
-      if (layout === "stacked") transitionStacked();
-      else transitionGrouped();
-    }
+  calculateGroupFlow(leftGroup: string, rightGroup: string, category: 'Rank' | 'promotion' | 'jobLevel'): number {
+    return this.data.filter(d => {
+      const leftValue = this.leftSelected === 'gpa' 
+        ? this.getGPAGroup(parseFloat(d['University_GPA'])) 
+        : this.leftSelected === 'sat' 
+          ? this.getSATGroup(parseInt(d['SAT_Score'])) 
+          : this.getUniversityRankGroup(parseInt(d['University_Ranking']));
 
-    let currentLayout: "stacked" | "grouped" = "stacked";
-    setInterval(() => {
-      currentLayout = currentLayout === "stacked" ? "grouped" : "stacked";
-      update(currentLayout);
-    }, 2000);
+      const rightValue = category === 'Rank'
+        ? this.getUniversityRankGroup(parseInt(d['University_Ranking']))
+        : category === 'promotion'
+          ? this.getPromotionGroup(parseInt(d['Years_to_Promotion']))
+          : d['Current_Job_Level'];
+
+      return leftValue === leftGroup && rightValue === rightGroup;
+    }).length;
+  }
+
+  getGPAGroup(gpa: number): string {
+    if (gpa >= 2.0 && gpa < 2.5) return "2-2.5";
+    if (gpa >= 2.5 && gpa < 3.0) return "2.5-3.0";
+    if (gpa >= 3.0 && gpa < 3.5) return "3.0-3.5";
+    if (gpa >= 3.5 && gpa <= 4.0) return "3.5-4.0";
+    return "Unknown";
+  }
+
+  getSATGroup(sat: number): string {
+    if (sat >= 1 && sat <= 600) return "1-600";
+    if (sat > 600 && sat <= 1000) return "601-1000";
+    if (sat > 1000 && sat <= 1300) return "1001-1300";
+    if (sat > 1300 && sat <= 1600) return "1301-1600";
+    return "Unknown";
+  }
+
+  getUniversityRankGroup(rank: number): string {
+    if (rank >= 1 && rank <= 200) return "1-200";
+    if (rank > 200 && rank <= 400) return "201-400";
+    if (rank > 400 && rank <= 600) return "401-600";
+    if (rank > 600 && rank <= 800) return "601-800";
+    if (rank > 800 && rank <= 1000) return "801-1000";
+    return "Unknown";
+  }
+
+  getPromotionGroup(years: number): string {
+    if (years === 1) return "Year 1";
+    if (years === 2) return "Year 2";
+    if (years === 3) return "Year 3";
+    if (years === 4) return "Year 4";
+    return "Year 5+";
   }
 }
