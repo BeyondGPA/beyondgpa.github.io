@@ -1,56 +1,37 @@
 <main>
   <app-header></app-header>
-  
+
   <div class="timeline-container">
-    <app-viz-section
-      sectionId="1."
-      section="Visual 1"
-      description="Description of the first visual."
-      [questions]="Questions1"
-      [answers]="Answers1">
+    <app-viz-section sectionId="1." section="Visual 1" description="Description of the first visual."
+      [questions]="Questions1" [answers]="Answers1">
       <app-visual-1></app-visual-1>
     </app-viz-section>
-    
-    <app-viz-section
-      sectionId="2."
-      section="Visual 2"
-      description="Description of the second visual."
-      [questions]="Questions2"
-      [answers]="Answers2">
+
+    <app-viz-section sectionId="2." section="Visual 2" description="Description of the second visual."
+      [questions]="Questions2" [answers]="Answers2">
       <app-visual-2></app-visual-2>
     </app-viz-section>
-    
-    <!-- becomes visual 3 from report -->
-    <app-viz-section 
-      sectionId="3."
-      section="Visual 3"
-      description="Description of the third visual."
-      [questions]="Questions3"
-      [answers]="Answers3">
+
+    <app-viz-section sectionId="3." section="Visual 3"
+      description="This scatter plot visualizes the relationship between networking score -> X-axis and completed projects  -> Y-axis for students in a selected field of study. Each dot represents one student, and the color intensity indicates the number of job offers received — from lighter (fewer offers) to darker blue (more offers). Use the dropdown menu to filter by field of study"
+      [questions]="Questions3" [answers]="Answers3">
       <app-visual-3></app-visual-3>
     </app-viz-section>
-    
-    <app-viz-section
-      sectionId="4."
-      section="Box Plot: Academic Performance vs. Time to Promotion"
+
+    <app-viz-section sectionId="4." section="Box Plot: Academic Performance vs. Time to Promotion"
       description="This visualization uses a box plot to show how university GPA influences the time it takes students to receive their first promotion. It allows us to explore both central trends and variability across GPA brackets."
-      [questions]="Questions4"
-      [answers]="Answers4">
+      [questions]="Questions4" [answers]="Answers4">
       <app-visual-4></app-visual-4>
     </app-viz-section>
 
-    
-    <app-viz-section
-      sectionId="5."
-      section="Visual 5"
-      description="Description of the third visual."
-      [questions]="Questions5"
-      [answers]="Answers5">
+
+    <app-viz-section sectionId="5." section="Visual 5" description="Description of the third visual."
+      [questions]="Questions5" [answers]="Answers5">
       <app-visual-5></app-visual-5>
     </app-viz-section>
-    
+
   </div>
-  
+
   <footer>
     <img src="assets/beyondGPA.png" alt="Logo" class="logo">
     <p>&copy; 2025 BeyondGPA. All rights reserved.</p>

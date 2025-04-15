@@ -35,29 +35,29 @@ export class MainPageComponent {
   Questions1 = [
     { id: 'A1.1 (★★★)', text: 'To what extent does a high GPA in university correlate with career success?' }
   ];
-  
+
   Answers1 = [
     { id: 'A1.1 (★★★)', text: 'Students with a high GPA tend to receive higher starting salaries and more job offers, indicating a positive correlation between academic performance and professional success.' }
   ];
-  
+
   Questions2 = [
     { id: 'A1.2 (★★★)', text: 'What is the impact of academic indicators on starting salary?' },
   ];
-  
+
   Answers2 = [
     { id: 'A1.2 (★★★)', text: 'Theres no impact' },
-   
+
   ];
-  
+
   Questions3 = [
-    { id: 'A1.3 (★★★) ', text: 'Is there a correlation between academic indicators (GPA, SAT, ranking) and the job level?' },
-    { id: 'A1.4 (★★☆)', text: 'How do academic indicators influence the average time required to get a promotion?' },
+    { id: 'A2.1 (★★★) ', text: 'Can internships, projects and certifications compensate for a less successful academic profile in terms of professional opportunities?' },
+    { id: 'A2.4 (★★☆)', text: 'Is there a significant interaction between project work and the development of non-academic skills in obtaining job offers?' },
   ];
-  
+
 
   Answers3 = [
-    { id: 'A1.3 (★★★) ', text: 'There is no correlation' },
-    { id: 'A1.4 (★★☆)', text: 'They do not seem to influence the average time to get a promotion' },
+    { id: 'A2.1 (★★★) ', text: 'The scatter plot shows that students with high project completion and networking scores tend to receive more job offers, even across fields where academic GPA may be less emphasized, The color intensity (job offers) often increases with projects completed, suggesting their value regardless of GPA.  This suggests that practical experience and soft skills can make up for a weaker academic profile in terms of employability.' },
+    { id: 'A2.4 (★★☆)', text: 'The scatter plot reveals a significant interaction between project completion and non-academic skills like networking for example, as students who score high on both dimensions tend to receive more job offers, regardless of their academic background.' },
   ];
 
   Questions4 = [

@@ -1,18 +1,9 @@
 <div class="container">
   <div class="options">
-    <select [(ngModel)]="leftSelected" (change)="renderSankey()">
-      <option value="rank">University Rank</option>
-      <option value="sat">SatScore</option>
-      <option value="gpa">GPA</option>
-    </select>
-
-    <select [(ngModel)]="selectedCategory" (change)="renderSankey()">
-      <option value="promotion">Years to Promotion</option>
-      <option value="jobLevel">Current Job Level</option>
+    <select id="fieldSelect" (change)="onFieldChange($event)">
+      <option *ngFor="let field of fieldsOfStudy" [value]="field">{{ field }}</option>
     </select>
   </div>
 
-  <div class="chart-container">
-    <div #chart></div>
-  </div>
+  <div #chart class="chart-container"></div>
 </div>
