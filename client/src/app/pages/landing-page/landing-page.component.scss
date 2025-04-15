@@ -36,6 +36,13 @@ html, body, app-root, app-landing-page, main {
   box-sizing: border-box;
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .title {
   display: inline-block;
   font-size: 5.5rem;
@@ -66,8 +73,6 @@ html, body, app-root, app-landing-page, main {
   text-align: center;
   position: relative;
   animation: fadeIn 1s ease-in;
-  height: -webkit-fill-available;
-  width: -webkit-fill-available;
 }
 
 .intro-content {
