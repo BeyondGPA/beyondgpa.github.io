@@ -82,148 +82,154 @@ export class Visual1Component implements AfterViewInit {
   }
 
   renderChart(data: any[], boxPlotData: BoxPlotStatistics[]): void {
-    // Set up dimensions
-    const margin = {top: 50, right: 30, bottom: 50, left: 50};
-    const width = 600 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
-
-    // Create SVG
-    const svg = d3.select(this.chartContainer.nativeElement)
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+    const margin = { top: 40, right: 30, bottom: 50, left: 60 };
+    const width = 800 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
+    const boundedWidth = width - margin.left - margin.right;
+    const boundedHeight = height - margin.top - margin.bottom;
+  
+    const container = d3.select(this.chartContainer.nativeElement);
+    const svg = container.append("svg")
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .attr("width", width)
+      .attr("height", height)
+      .style('display', 'block')
+      .style('max-width', '100%')
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
-
-    // Add title
-    svg.append("text")
-      .attr("class", "title")
-      .attr("x", width / 2)
-      .attr("y", -20)
-      .text("University GPA Distribution by Job Level");
-
-    // X scale - job levels
+  
+    const tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip-boxplot");
+  
     const jobLevels = boxPlotData.map(d => d.jobLevel);
-    const xScale = d3.scaleBand()
+    const x = d3.scaleBand()
       .domain(jobLevels)
-      .range([0, width])
-      .padding(0.2);
-
+      .range([0, boundedWidth])
+      .padding(0.3);
+  
+    const maxGPA = d3.max(data, d => +d.University_GPA) || 4;
+    const y = d3.scaleLinear()
+      .domain([0, maxGPA])
+      .range([boundedHeight, 0])
+      .nice();
+  
+    // Axes
+    svg.append("g")
+      .attr("transform", `translate(0, ${boundedHeight})`)
+      .call(d3.axisBottom(x));
+  
+    svg.append("g")
+      .call(d3.axisLeft(y));
+  
+    // Draw each box
+    const boxWidth = x.bandwidth() * 0.5;
+  
     const colorScale = d3.scaleOrdinal<string>()
       .domain(jobLevels)
       .range([
-        "#FFEEEE",  // Very light red (Entry)
-        "#FFAAAA",  // Light coral (Mid)
-        "#FF6B6B",  // Medium coral (Senior)
-        "#E31937"   // Rich crimson (Executive)
+        "#FFEEEE",  // Entry
+        "#FFAAAA",  // Mid
+        "#FF6B6B",  // Senior
+        "#E31937"   // Executive
       ]);
 
-    // Y scale - GPA
-    const maxGPA = d3.max(data, d => +d.University_GPA) as number;
-    const yScale = d3.scaleLinear()
-      .domain([0, maxGPA])
-      .range([height, 0])
-      .nice();
-
-    // Draw boxes
-    svg.selectAll(".box")
-      .data(boxPlotData)
-      .enter()
-      .append("rect")
-      .attr("class", "box")
-      .attr("x", d => xScale(d.jobLevel) ?? 0)
-      .attr("y", d => yScale(d.q3))
-      .attr("width", xScale.bandwidth())
-      .attr("height", d => yScale(d.q1) - yScale(d.q3))
-      .attr("rx", 2)
-      .attr("ry", 2)
-      .attr('fill', d => colorScale(d.jobLevel))
-
-    // Draw median lines
-    svg.selectAll(".median")
-        .data(boxPlotData)
-        .enter()
-        .append("line")
-        .attr("class", "median")
-        .attr("x1", d => xScale(d.jobLevel) ?? 0)
-        .attr("x2", d => (xScale(d.jobLevel) ?? 0) + xScale.bandwidth())
-        .attr("y1", d => yScale(d.median))
-        .attr("y2", d => yScale(d.median))
-
-    // Draw whiskers
-    svg.selectAll(".whisker")
-        .data(boxPlotData)
-        .enter()
-        .each(function(d) {
-            const centerX = (xScale(d.jobLevel) ?? 0) + xScale.bandwidth() / 2;
-            
-            // Bottom whisker
-            d3.select(this)
-                .append("line")
-                .attr("class", "whisker")
-                .attr("x1", centerX)
-                .attr("x2", centerX)
-                .attr("y1", yScale(d.max))
-                .attr("y2", yScale(d.q3))
-            
-            // Top whisker
-            d3.select(this)
-                .append("line")
-                .attr("class", "whisker")
-                .attr("x1", centerX)
-                .attr("x2", centerX)
-                .attr("y1", yScale(d.q1))
-                .attr("y2", yScale(d.min))
-            
-            // Bottom cap
-            d3.select(this)
-                .append("line")
-                .attr("class", "whisker")
-                .attr("x1", centerX - 5)
-                .attr("x2", centerX + 5)
-                .attr("y1", yScale(d.max))
-                .attr("y2", yScale(d.max))
-            
-            // Top cap
-            d3.select(this)
-                .append("line")
-                .attr("class", "whisker")
-                .attr("x1", centerX - 5)
-                .attr("x2", centerX + 5)
-                .attr("y1", yScale(d.min))
-                .attr("y2", yScale(d.min))
+    boxPlotData.forEach((d, i) => {
+      const centerX = x(d.jobLevel)! + x.bandwidth() / 2;
+  
+      // Vertical line (whisker)
+      svg.append("line")
+        .attr("class", "whisker")
+        .attr("x1", centerX)
+        .attr("x2", centerX)
+        .attr("y1", y(d.q3))
+        .attr("y2", y(d.q3))
+        .transition()
+        .delay(i * 100)
+        .duration(400)
+        .attr("y1", y(d.min))
+        .attr("y2", y(d.max));
+  
+      // Box
+      const box = svg.append("rect")
+        .attr("class", "box")
+        .attr("fill", colorScale(d.jobLevel))
+        .attr("x", centerX - boxWidth / 2)
+        .attr("width", boxWidth)
+        .attr("y", y(d.q3))
+        .attr("height", 0)
+        .on("mousemove", (event) => {
+          tooltip
+            .style("left", `${event.pageX + 12}px`)
+            .style("top", `${event.pageY - 28}px`)
+            .style("opacity", 1)
+            .style("display", "block")
+            .html(`
+              <strong>${d.jobLevel}</strong><br>
+              Q1: ${d.q1.toFixed(2)}<br>
+              Median: ${d.median.toFixed(2)}<br>
+              Q3: ${d.q3.toFixed(2)}<br>
+              Min: ${d.min.toFixed(2)}<br>
+              Max: ${d.max.toFixed(2)}
+            `);
+        })
+        .on("mouseleave", () => {
+          tooltip.style("opacity", 0);
+        })
+        .on("click", function () {
+          d3.selectAll(".box").classed("highlighted", false);
+          d3.select(this).classed("highlighted", true);
         });
-
-    // Draw outliers
-    // svg.selectAll(".outlier")
-    //     .data(boxPlotData.flatMap(d => 
-    //         d.outliers.map(v => ({ jobLevel: d.jobLevel, value: v }))
-    //     ))
-    //     .enter()
-    //     .append("circle")
-    //     .attr("class", "outlier")
-    //     .attr("cx", d => (xScale(d.jobLevel) || 0) + xScale.bandwidth() / 2)
-    //     .attr("cy", d => yScale(d.value))
-    //     .attr("r", 3);
-
-    // Add X axis
-    svg.append("g")
-        .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(xScale))
-        .append("text")
-        .attr("class", "axis-label")
-        .attr("x", width / 2)
-        .attr("y", 35)
-        .text("Current Job Level");
-
-    // Add Y axis
-    svg.append("g")
-        .call(d3.axisLeft(yScale))
-        .append("text")
-        .attr("class", "axis-label")
-        .attr("transform", "rotate(-90)")
-        .attr("y", -40)
-        .attr("x", -height / 2)
-        .text("University GPA");
-    }
+  
+      box.transition()
+        .delay(i * 100)
+        .duration(500)
+        .attr("height", y(d.q1) - y(d.q3));
+  
+      // Median
+      svg.append("line")
+        .attr("class", "median-line")
+        .attr("x1", centerX - boxWidth / 2)
+        .attr("x2", centerX + boxWidth / 2)
+        .attr("y1", y(d.median))
+        .attr("y2", y(d.median))
+        .style("opacity", 0)
+        .transition()
+        .delay(i * 100 + 400)
+        .duration(300)
+        .style("opacity", 1);
+  
+      // Min whisker cap
+      svg.append("line")
+        .attr("class", "whisker")
+        .attr("x1", centerX - boxWidth / 4)
+        .attr("x2", centerX + boxWidth / 4)
+        .attr("y1", y(d.min))
+        .attr("y2", y(d.min));
+  
+      // Max whisker cap
+      svg.append("line")
+        .attr("class", "whisker")
+        .attr("x1", centerX - boxWidth / 4)
+        .attr("x2", centerX + boxWidth / 4)
+        .attr("y1", y(d.max))
+        .attr("y2", y(d.max));
+    });
+  
+    // Labels
+    svg.append("text")
+      .attr("x", boundedWidth / 2)
+      .attr("y", boundedHeight + margin.bottom - 5)
+      .attr("text-anchor", "middle")
+      .text("Current Job Level");
+  
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin.left + 20)
+      .attr("x", -boundedHeight / 2)
+      .attr("text-anchor", "middle")
+      .text("University GPA");
+  }
+  
 }
