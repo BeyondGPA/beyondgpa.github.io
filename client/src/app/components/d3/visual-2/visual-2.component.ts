@@ -12,11 +12,12 @@ import { DataService } from '@app/services/data/data.service';
 })
 export class Visual2Component implements AfterViewInit {
   @ViewChild('chart') chartContainer!: ElementRef;
-  selectedX: string = 'University_GPA'; // X-axis variable
+  selectedX: string = 'University_GPA';
   data: any[] = [];
   fieldOptions: string[] = [];
+  currentIndex = 0;
+  chartsPerPage = 2;
 
-  // Global min/max values for x and y axes, will be recalculated based on selected variable
   globalMinX: number = Infinity;
   globalMaxX: number = -Infinity;
   globalMinY: number = Infinity;
@@ -27,31 +28,26 @@ export class Visual2Component implements AfterViewInit {
   ngAfterViewInit(): void {
     this.dataService.loadCareerData().then(data => {
       this.data = data;
-      this.fieldOptions = Array.from(new Set(data.map(d => d.Field_of_Study))); // Get unique Field_of_Study values
-      this.calculateGlobalMinMax(); // Initial global min/max values for both axes
+      this.fieldOptions = Array.from(new Set(data.map(d => d.Field_of_Study)));
+      this.calculateGlobalMinMax();
       this.renderCharts();
     });
   }
 
-  // Calculate global min/max for both x and y axes based on the selected variables
   calculateGlobalMinMax(): void {
-    // Calculate for selected X
     this.globalMinX = d3.min(this.data, d => +d[this.selectedX]) as number;
     this.globalMaxX = d3.max(this.data, d => +d[this.selectedX]) as number;
-
-    // Calculate for Y (always Starting_Salary)
     this.globalMinY = d3.min(this.data, d => +d['Starting_Salary']) as number;
     this.globalMaxY = d3.max(this.data, d => +d['Starting_Salary']) as number;
   }
 
   renderCharts(): void {
-    if (!this.data.length) return;
+    const container = d3.select(this.chartContainer.nativeElement);
+    container.selectAll('svg').remove();
 
-    // Clear the existing charts before rendering new ones
-    d3.select(this.chartContainer.nativeElement).selectAll("svg").remove();
+    const fieldsToShow = this.fieldOptions.slice(this.currentIndex, this.currentIndex + this.chartsPerPage);
 
-    // Loop through all field options and render charts
-    this.fieldOptions.forEach(field => {
+    fieldsToShow.forEach(field => {
       const filteredData = this.data.filter(d => d.Field_of_Study === field);
       this.renderChartForField(filteredData, field);
     });
@@ -62,12 +58,10 @@ export class Visual2Component implements AfterViewInit {
     const height = 400;
     const margin = { top: 30, right: 30, bottom: 50, left: 60 };
 
-    // Set up x-axis scale (dynamic based on selected X variable)
     const x = d3.scaleLinear()
-      .domain([this.globalMinX, this.globalMaxX]) // Use the global min/max for x-axis
+      .domain([this.globalMinX, this.globalMaxX])
       .range([margin.left, width - margin.right]);
 
-    // Y-axis scale is always the same: Starting_Salary
     const y = d3.scaleLinear()
       .domain([this.globalMinY, this.globalMaxY])
       .nice()
@@ -125,7 +119,6 @@ export class Visual2Component implements AfterViewInit {
           .attr("fill", "steelblue");
       });
 
-
     svg.append("text")
       .attr("x", width / 2)
       .attr("y", margin.top - 10)
@@ -135,8 +128,22 @@ export class Visual2Component implements AfterViewInit {
       .text(`${field}`);
   }
 
-    updateChart(): void {
-      this.calculateGlobalMinMax();
+  updateChart(): void {
+    this.calculateGlobalMinMax();
+    this.renderCharts();
+  }
+
+  nextCharts(): void {
+    if (this.currentIndex + this.chartsPerPage < this.fieldOptions.length) {
+      this.currentIndex += this.chartsPerPage;
       this.renderCharts();
     }
+  }
+
+  previousCharts(): void {
+    if (this.currentIndex - this.chartsPerPage >= 0) {
+      this.currentIndex -= this.chartsPerPage;
+      this.renderCharts();
+    }
+  }
 }
