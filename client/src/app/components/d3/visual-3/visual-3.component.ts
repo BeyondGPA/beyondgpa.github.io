@@ -154,7 +154,7 @@ export class Visual3Component implements AfterViewInit {
     for (let i = 0; i <= 10; i++) {
       gradient.append('stop')
         .attr('offset', `${i * 10}%`)
-        .attr('stop-color', color(i));
+        .attr('stop-color', color(10 - i));
     }
 
     svg.append('rect')

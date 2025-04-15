@@ -51,13 +51,13 @@ export class MainPageComponent {
 
   Questions3 = [
     { id: 'A2.1 (★★★) ', text: 'Can internships, projects and certifications compensate for a less successful academic profile in terms of professional opportunities?' },
-    { id: 'A2.2 (★★☆)', text: 'What is the combined impact of the number of internships and certifications on starting salary and career progression?' },
+    { id: 'A2.4 (★★☆)', text: 'Is there a significant interaction between project work and the development of non-academic skills in obtaining job offers?' },
   ];
 
 
   Answers3 = [
-    { id: 'A2.1 (★★★) ', text: '' },
-    { id: 'A2.2 (★★☆)', text: '' },
+    { id: 'A2.1 (★★★) ', text: 'The scatter plot shows that students with high project completion and networking scores tend to receive more job offers, even across fields where academic GPA may be less emphasized, The color intensity (job offers) often increases with projects completed, suggesting their value regardless of GPA.  This suggests that practical experience and soft skills can make up for a weaker academic profile in terms of employability.' },
+    { id: 'A2.4 (★★☆)', text: 'The scatter plot reveals a significant interaction between project completion and non-academic skills like networking for example, as students who score high on both dimensions tend to receive more job offers, regardless of their academic background.' },
   ];
 
   Questions4 = [
