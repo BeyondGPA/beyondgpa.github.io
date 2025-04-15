@@ -27,10 +27,13 @@
 }
 
 html, body, app-root, app-landing-page, main {
-  height: -webkit-fill-available;
-  width: -webkit-fill-available;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
   display: block;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .title {
@@ -38,7 +41,6 @@ html, body, app-root, app-landing-page, main {
   font-size: 5.5rem;
   font-weight: 800;
   letter-spacing: -0.05em;
-  margin-bottom: 0.5rem;
   
   span {
     color: var(--highlight-color);
