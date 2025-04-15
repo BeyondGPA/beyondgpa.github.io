@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from "@angular/forms";
 import { HeaderComponent } from "../../components/header/header.component";
 import { VizSectionComponent } from "../../components/viz-section/viz-section.component";
 import { Visual1Component } from "@app/components/d3/visual-1/visual-1.component";
@@ -12,7 +12,6 @@ import { Visual5Component } from "@app/components/d3/visual-5/visual-5.component
 // import { ScatterVizComponent } from '@app/components/d3/scatter-viz/scatter-viz.component';
 // import { SankeyVizComponent } from '@app/components/d3/sankey-viz/sankey-viz.component';
 // import { StackedBarVizComponent } from '@app/components/d3/stacked-bar-viz/stacked-bar-viz.component';
-
 
 @Component({
   standalone: true,
@@ -33,73 +32,96 @@ import { Visual5Component } from "@app/components/d3/visual-5/visual-5.component
 })
 export class MainPageComponent {
   Questions1 = [
-    { id: 'A1.1 (★★★)', text: 'To what extent does a high GPA in university correlate with career success?' }
+    {
+      id: "A1.1 (★★★)",
+      text: "To what extent does a high GPA in university correlate with career success?",
+    },
   ];
-  
+
   Answers1 = [
-    { id: 'A1.1 (★★★)', text: 'Students with a high GPA tend to receive higher starting salaries and more job offers, indicating a positive correlation between academic performance and professional success.' }
+    {
+      id: "A1.1 (★★★)",
+      text: "Students with a high GPA tend to receive higher starting salaries and more job offers, indicating a positive correlation between academic performance and professional success.",
+    },
   ];
-  
+
   Questions2 = [
-    { id: 'A1.2 (★★★)', text: 'What is the impact of academic indicators on starting salary?' },
+    {
+      id: "A1.2 (★★★)",
+      text: "What is the impact of academic indicators on starting salary?",
+    },
   ];
-  
-  Answers2 = [
-    { id: 'A1.2 (★★★)', text: 'Theres no impact' },
-   
-  ];
-  
+
+  Answers2 = [{ id: "A1.2 (★★★)", text: "Theres no impact" }];
+
   Questions3 = [
-    { id: 'A1.3 (★★★) ', text: 'Is there a correlation between academic indicators (GPA, SAT, ranking) and the job level?' },
-    { id: 'A1.4 (★★☆)', text: 'How do academic indicators influence the average time required to get a promotion?' },
+    {
+      id: "A1.3 (★★★) ",
+      text: "Is there a correlation between academic indicators (GPA, SAT, ranking) and the job level?",
+    },
+    {
+      id: "A1.4 (★★☆)",
+      text: "How do academic indicators influence the average time required to get a promotion?",
+    },
   ];
-  
 
   Answers3 = [
-    { id: 'A1.3 (★★★) ', text: 'There is no correlation' },
-    { id: 'A1.4 (★★☆)', text: 'They do not seem to influence the average time to get a promotion' },
+    { id: "A1.3 (★★★) ", text: "There is no correlation" },
+    {
+      id: "A1.4 (★★☆)",
+      text: "They do not seem to influence the average time to get a promotion",
+    },
   ];
 
   Questions4 = [
     {
-      id: 'A1.4 (★★☆)',
-      text: 'How do academic indicators influence the average time to promotion?'
+      id: "A1.4 (★★☆)",
+      text: "How do academic indicators influence the average time to promotion?",
     },
     {
-      id: 'A4.2 (★★☆)',
-      text: 'Is the number of years before a first promotion related to work-life balance satisfaction?'
-    }
+      id: "A4.2 (★★☆)",
+      text: "Is the number of years before a first promotion related to work-life balance satisfaction?",
+    },
   ];
 
   Answers4 = [
     {
-      id: 'A1.4 (★★☆)',
-      text: 'This box plot shows how the number of years before a first promotion varies across GPA brackets. We observe a clear inverse trend: students with higher university GPAs tend to reach their first promotion significantly faster. The median time to promotion for students with GPAs above 3.5 is approximately 3 years, compared to nearly 5 years for those with GPAs below 2.5. The interquartile ranges also tend to be narrower for higher GPA groups, suggesting more consistent advancement. This suggests that academic excellence not only correlates with career access (as seen in other visuals) but also with faster upward mobility.'
+      id: "A1.4 (★★☆)",
+      text: "This box plot shows how the number of years before a first promotion varies across GPA brackets. We observe a clear inverse trend: students with higher university GPAs tend to reach their first promotion significantly faster. The median time to promotion for students with GPAs above 3.5 is approximately 3 years, compared to nearly 5 years for those with GPAs below 2.5. The interquartile ranges also tend to be narrower for higher GPA groups, suggesting more consistent advancement. This suggests that academic excellence not only correlates with career access (as seen in other visuals) but also with faster upward mobility.",
     },
     {
-      id: 'A4.2 (★★☆)',
-      text: 'While the visualization does not directly plot work-life balance, a cross-reference with other dataset attributes reveals a pattern: individuals who experience quicker promotions tend to report slightly higher satisfaction with work-life balance. This may seem counterintuitive, as rapid promotion can imply greater responsibilities. However, it is possible that high-performing individuals are promoted into more desirable roles that afford them flexibility or satisfaction. Additional visuals or multi-variable analysis would be required to validate this correlation more concretely.'
-    }
+      id: "A4.2 (★★☆)",
+      text: "While the visualization does not directly plot work-life balance, a cross-reference with other dataset attributes reveals a pattern: individuals who experience quicker promotions tend to report slightly higher satisfaction with work-life balance. This may seem counterintuitive, as rapid promotion can imply greater responsibilities. However, it is possible that high-performing individuals are promoted into more desirable roles that afford them flexibility or satisfaction. Additional visuals or multi-variable analysis would be required to validate this correlation more concretely.",
+    },
   ];
 
   Questions5 = [
     {
       id: "A3.1 (★★★)",
-      text: "Existe-t-il des différences dans les résultats professionnels selon le domaine d’études choisi ",
+      text: "Do age and gender influence job satisfaction?",
     },
     {
-      id: "A3.2 (★★☆) ",
-      text: "Les variables démographiques, telles que l’âge et le genre, influencent t-elles le salaire initial?",
+      id: "A3.2 (★★☆)",
+      text: "Do demographic variables, such as age and gender, influence starting salary?",
     },
     {
-      id: "A3.3 (★☆) s",
-      text: "Les variables démographiques, telles que l’âge et le genre, influencent t-elles la performance académique?",
+      id: "A3.3 (★☆)",
+      text: "Do demographic variables, such as age and gender, influence work-life balance?",
     },
   ];
 
   Answers5 = [
-    { id: "", text: "" },
-    { id: "", text: "" },
-    { id: "", text: "" },
+    {
+      id: "A3.1 (★★★)",
+      text: "The first graph illustrates variations in initial salary by age and gender. Overall, salaries increase slightly with age but fluctuate more for certain age brackets. We observe distinct trends between men and women, with salary gaps appearing at several points. This suggests that both age and gender impact starting salary, confirming a correlation between demographic variables and income at entry.",
+    },
+    {
+      id: "A3.2 (★★☆)",
+      text: "The second graph shows that job satisfaction also varies by age and gender. While both curves follow similar trajectories, men tend to report slightly higher satisfaction at specific ages. The variations in peaks and dips imply that perceived professional satisfaction is indeed influenced by demographic characteristics.",
+    },
+    {
+      id: "A3.3 (★☆)",
+      text: "In the third graph, we observe how work-life balance perception shifts with age for both genders. The gap between male and female responses suggests a gendered experience in balancing personal and professional life. Although the correlation is less pronounced than in the other two graphs, it still shows that age and gender have a moderate influence on this aspect of professional well-being.",
+    },
   ];
 }
