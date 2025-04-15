@@ -27,10 +27,20 @@
 }
 
 html, body, app-root, app-landing-page, main {
-  height: -webkit-fill-available;
-  width: -webkit-fill-available;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
   display: block;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .title {
@@ -38,7 +48,6 @@ html, body, app-root, app-landing-page, main {
   font-size: 5.5rem;
   font-weight: 800;
   letter-spacing: -0.05em;
-  margin-bottom: 0.5rem;
   
   span {
     color: var(--highlight-color);
@@ -64,8 +73,6 @@ html, body, app-root, app-landing-page, main {
   text-align: center;
   position: relative;
   animation: fadeIn 1s ease-in;
-  height: -webkit-fill-available;
-  width: -webkit-fill-available;
 }
 
 .intro-content {
