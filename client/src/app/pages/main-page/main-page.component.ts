@@ -8,6 +8,7 @@ import { Visual2Component } from "@app/components/d3/visual-2/visual-2.component
 import { Visual3Component } from "@app/components/d3/visual-3/visual-3.component";
 import { Visual4Component } from "@app/components/d3/visual-4/visual-4.component";
 import { Visual5Component } from "@app/components/d3/visual-5/visual-5.component";
+
 // import { ScatterVizComponent } from '@app/components/d3/scatter-viz/scatter-viz.component';
 // import { SankeyVizComponent } from '@app/components/d3/sankey-viz/sankey-viz.component';
 // import { StackedBarVizComponent } from '@app/components/d3/stacked-bar-viz/stacked-bar-viz.component';
@@ -18,7 +19,8 @@ import { Visual5Component } from "@app/components/d3/visual-5/visual-5.component
   selector: "app-main-page",
   imports: [
     CommonModule,
-    FormsModule, HeaderComponent,
+    FormsModule,
+    HeaderComponent,
     VizSectionComponent,
     Visual1Component,
     Visual2Component,

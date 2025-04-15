@@ -100,8 +100,17 @@ export class Visual1Component implements AfterViewInit {
       .attr("transform", `translate(${margin.left},${margin.top})`);
   
     const tooltip = d3.select("body")
-      .append("div")
-      .attr("class", "tooltip-boxplot");
+      .append('div')
+      .attr('class', 'tooltip-boxplot')
+      .style('display', 'None')
+      .style('position', 'absolute')
+      .style('background', 'rgba(0,0,0,0.75)')
+      .style('color', '#fff')
+      .style('padding', '6px 10px')
+      .style('border-radius', '4px')
+      .style('pointer-events', 'none')
+      .style('font-size', '13px')
+      .style('opacity', 0);
   
     const jobLevels = boxPlotData.map(d => d.jobLevel);
     const x = d3.scaleBand()

@@ -1,0 +1,39 @@
+<main>
+    <div class="stars-container">
+        <div id='stars'></div>
+        <div id='stars2'></div>
+        <!-- <div id='stars3'></div> -->
+    </div>
+    <div class="landing-intro">
+        <div class="intro-content">
+            <h1 class="title">Beyond<span>GPA</span></h1>
+
+            <p class="intro-subtitle">Does Academic Excellence Predict Career Success?</p>
+            <p class="intro-text">
+            We’ve all heard it: "School prepares you for life." But does academic performance actually shape our career trajectories?
+            With full control over a synthetic dataset tracking education and career milestones, this project dives deep into the nuances behind GPA, job offers, promotions, satisfaction, and more.
+            </p>
+            <div class="actions">
+                <a href="/home" type="button" class="btn">
+                    <strong>Start Exploring</strong>
+                    <div id="container-stars">
+                        <div id="stars1"></div>
+                    </div>
+        
+                    <div id="glow">
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                    </div>
+                </a>
+                <div class="toggle-theme">
+                    <button title="Toggle Theme" class="button"
+                    (click)="toggleTheme()"
+                    (mouseenter)="isHovered = true"
+                    (mouseleave)="isHovered = false">
+                    <img [attr.src]="isHovered ? hoverIconSrc : iconSrc" alt="Theme Icon" height="16" width="16">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
