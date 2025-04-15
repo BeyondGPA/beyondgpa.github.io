@@ -10,162 +10,178 @@ import { DataService } from '@app/services/data/data.service';
 })
 export class Visual4Component implements AfterViewInit {
   @ViewChild('chart') chartContainer!: ElementRef;
+  private hasRendered = false;
 
   constructor(private dataService: DataService) {}
 
   ngAfterViewInit(): void {
-    this.dataService.loadCareerData().then(data => {
-      this.renderChart(data);
-    });
+    const observer = new IntersectionObserver(entries => {
+      const entry = entries[0];
+      if (entry.isIntersecting && !this.hasRendered) {
+        this.hasRendered = true;
+        this.dataService.loadCareerData().then(data => {
+          this.renderBoxPlot(data);
+        });
+        observer.disconnect();
+      }
+    }, { threshold: 0.3 });
+
+    observer.observe(this.chartContainer.nativeElement);
   }
 
-  renderChart(data: any[]): void {
-    // --- Data Aggregation into 10 GPA Bins ---
-    // Extract GPA values.
-    const gpaValues = data.map(d => +d.University_GPA);
-    const [minGPA, maxGPA] = d3.extent(gpaValues) as [number, number];
-    const binCount = 10;
-    // Create 11 threshold values (bin boundaries).
-    const binThresholds = d3.range(binCount + 1).map(i => minGPA + (maxGPA - minGPA) * (i / binCount));
-    // Create labels, e.g. "2.5 - 2.8".
-    const labels = binThresholds.slice(0, binCount).map((t, i) =>
-      `${t.toFixed(1)} - ${binThresholds[i + 1].toFixed(1)}`
-    );
+  renderBoxPlot(data: any[]): void {
+    const margin = { top: 20, right: 30, bottom: 50, left: 40 };
+    const width = 700 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
 
-    // Initialize 10 bins.
-    const bins = Array.from({ length: binCount }, () => ({ salarySum: 0, offersSum: 0, count: 0 }));
-    data.forEach(d => {
-      const gpa = +d.University_GPA;
-      // if GPA equals max, force it into the last bin.
-      const binIndex = (gpa === maxGPA)
-        ? binCount - 1
-        : Math.floor((gpa - minGPA) / ((maxGPA - minGPA) / binCount));
-      bins[binIndex].salarySum += +d.Starting_Salary;
-      bins[binIndex].offersSum += +d.Job_Offers;
-      bins[binIndex].count++;
-    });
-    // Compute average salary and offers for each bin.
-    const avgSalary = bins.map(bin => bin.count ? bin.salarySum / bin.count : 0);
-    const avgOffers = bins.map(bin => bin.count ? bin.offersSum / bin.count : 0);
-    // Scale salary down by 10,000.
-    const salaryData = avgSalary.map(s => s / 10000);
-    // Our two series: starting salary and job offers.
-    const seriesData = [salaryData, avgOffers];
-    const n = seriesData.length;  // 2 series
-    // const m = binCount;           // 10 bins
-
-    // --- Adjusted Dimensions (e.g., 600×400) ---
-    const width = 600;
-    const height = 400;
-    const marginTop = 0;
-    const marginRight = 0;
-    const marginBottom = 10;
-    const marginLeft = 0;
-
-    // x-scale: use the computed bin labels.
-    const x = d3.scaleBand<string>()
-      .domain(labels)
-      .rangeRound([marginLeft, width - marginRight])
-      .padding(0.08);
-
-    // Prepare stacked data.
-    // For d3.stack, we need to convert each bin's series into an object with keys.
-    const keys = d3.range(n).map(String);
-    const transposed = d3.transpose(seriesData) as number[][];
-    const stackedData = d3.stack()
-      .keys(keys)
-      (transposed.map(d => {
-        const obj: { [key: string]: number } = {};
-        d.forEach((value, i) => { obj[keys[i]] = value; });
-        return obj;
-      }))
-      .map((data, i) =>
-        data.map((d: d3.SeriesPoint<{ [key: string]: number }>) => [d[0], d[1], i] as [number, number, number])
-      );
-      
-    const yMaxStacked = d3.max(stackedData, series => d3.max(series, d => d[1]))!;
-    const y = d3.scaleLinear()
-      .domain([0, yMaxStacked])
-      .range([height - marginBottom, marginTop]);
-
-    const color = d3.scaleSequential(d3.interpolateViridis)
-      .domain([-0.5 * n, 1.5 * n]);
-
-    // --- Create the SVG and Draw the Bars ---
-    const svg = d3.select(this.chartContainer.nativeElement)
-      .append("svg")
-      .attr("viewBox", `0 -25 ${width} ${height + 50}`)
+    const container = d3.select(this.chartContainer.nativeElement);
+    const svg = container
+      .append('svg')
+      .attr("viewBox", `0 0 ${width + 50} ${height + 75}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
       .attr("width", width)
       .attr("height", height)
-      .attr("style", "max-width: 100%; height: auto;");
+      .style('display', 'block')
+      .style('max-width', '100%')
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const rect = svg.selectAll("g")
-      .data(stackedData)
-      .join("g")
-        .attr("fill", (_d, i) => color(i))
-      .selectAll("rect")
-      .data(d => d)
-      .join("rect")
-        // For x, we use the index of the bin to match the labels array.
-        .attr("x", (_d, i) => x(labels[i])!)
-        .attr("y", height - marginBottom)
-        .attr("width", x.bandwidth())
-        .attr("height", 0);
+    const cleanData = data
+      .filter(d => d.University_GPA && d.Years_to_Promotion)
+      .map(d => ({
+        gpa: parseFloat(d.University_GPA),
+        years: parseFloat(d.Years_to_Promotion)
+      }));
 
-    svg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(d3.axisBottom(x).tickSizeOuter(0));
+    const grouped = d3.groups(cleanData, d => Math.round(d.gpa * 2) / 2);
+    const labels = grouped.map(([g]) => g.toFixed(1));
 
-    // --- Transition Functions ---
-    function transitionGrouped() {
-      // For grouped view, use maximum among individual metrics.
-      y.domain([0, d3.max(seriesData, series => d3.max(series))!]);
-      rect.transition()
-        .duration(500)
-        .delay((d: unknown, i: number) => i * 20)
-        .attr("x", (d: unknown, i: number) => {
-          const dd = d as [number, number, number];
-          return x(labels[i])! + x.bandwidth() / n * dd[2];
+    const summary = grouped.map(([gpa, records]) => {
+      const values = records.map(d => d.years).sort(d3.ascending);
+      const q1 = d3.quantile(values, 0.25)!;
+      const median = d3.quantile(values, 0.5)!;
+      const q3 = d3.quantile(values, 0.75)!;
+      const iqr = q3 - q1;
+      const rawMin = d3.min(values);
+      const rawMax = d3.max(values);
+      const min = Math.max(rawMin ?? q1, q1 - 1.5 * iqr);
+      const max = Math.min(rawMax ?? q3, q3 + 1.5 * iqr);
+      return { gpa: +gpa, q1, median, q3, min, max };
+    });
+
+    const x = d3.scaleBand()
+      .domain(labels)
+      .range([0, width])
+      .paddingInner(0.3)
+      .paddingOuter(0.1);
+
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(summary, d => d.max)! + 1])
+      .range([height, 0]);
+
+    svg.append('g')
+      .attr('transform', `translate(0,${height})`)
+      .call(d3.axisBottom(x));
+
+    svg.append('g')
+      .call(d3.axisLeft(y));
+
+    const tooltip = d3.select('body')
+      .append('div')
+      .attr('class', 'tooltip-boxplot')
+      .style('display', 'None')
+      .style('position', 'absolute')
+      .style('background', 'rgba(0,0,0,0.75)')
+      .style('color', '#fff')
+      .style('padding', '6px 10px')
+      .style('border-radius', '4px')
+      .style('pointer-events', 'none')
+      .style('font-size', '13px')
+      .style('opacity', 0);
+
+    summary.forEach((d, i) => {
+      const center = x(d.gpa.toFixed(1))! + x.bandwidth() / 2;
+      const boxWidth = x.bandwidth() * 0.5;
+
+      svg.append('line')
+        .attr('x1', center)
+        .attr('x2', center)
+        .attr('y1', y(d.min))
+        .attr('y2', y(d.min))
+        .attr('stroke', 'black')
+        .transition().delay(i * 100).duration(400)
+        .attr('y2', y(d.max));
+
+      const box = svg.append('rect')
+        .attr('x', center - boxWidth / 2)
+        .attr('width', boxWidth)
+        .attr('y', y(d.q3))
+        .attr('height', 0)
+        .attr('fill', '#69b3a2')
+        .attr('cursor', 'pointer')
+        .on('mousemove', (event) => {
+          tooltip
+            .style('left', event.pageX + 12 + 'px')
+            .style('top', event.pageY - 30 + 'px')
+            .style('opacity', 1)
+            .style('display', 'Block')
+            .html(`
+              <strong>GPA:</strong> ${d.gpa}<br>
+              Q1: ${d.q1}<br>
+              Median: ${d.median}<br>
+              Q3: ${d.q3}<br>
+              Min: ${d.min}<br>
+              Max: ${d.max}
+            `);
         })
-        .attr("width", x.bandwidth() / n)
-      .transition()
-        .attr("y", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(dd[1] - dd[0]);
-        })
-        .attr("height", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(0) - y(dd[1] - dd[0]);
+        .on('mouseleave', () => tooltip.style('opacity', 0))
+        .on('click', function () {
+          d3.selectAll('rect').attr('stroke', null);
+          d3.select(this).attr('stroke', 'black').attr('stroke-width', 2);
         });
-    }
 
-    function transitionStacked() {
-      y.domain([0, yMaxStacked]);
-      rect.transition()
-        .duration(500)
-        .delay((d: unknown, i: number) => i * 20)
-        .attr("y", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(dd[1]);
-        })
-        .attr("height", (d: unknown) => {
-          const dd = d as [number, number, number];
-          return y(dd[0]) - y(dd[1]);
-        })
-      .transition()
-        .attr("x", (d: unknown, i: number) => x(labels[i])!)
-        .attr("width", x.bandwidth());
-    }
+      box.transition().delay(i * 100).duration(500)
+        .attr('height', y(d.q1) - y(d.q3));
 
-    function update(layout: "stacked" | "grouped") {
-      if (layout === "stacked") transitionStacked();
-      else transitionGrouped();
-    }
+      svg.append('line')
+      .attr('class', 'median-pulse')
+      .attr('x1', center - boxWidth / 2)
+      .attr('x2', center + boxWidth / 2)
+      .attr('y1', y(d.median))
+      .attr('y2', y(d.median))
+      .attr('stroke', 'black')
+      .attr('stroke-width', 2)
+      .style('opacity', 0)
+      .transition().delay(i * 100 + 400).duration(300)
+      .style('opacity', 1);
+      
 
-    let currentLayout: "stacked" | "grouped" = "stacked";
-    setInterval(() => {
-      currentLayout = currentLayout === "stacked" ? "grouped" : "stacked";
-      update(currentLayout);
-    }, 2000);
+      svg.append('line')  // Min whisker
+        .attr('x1', center - boxWidth / 4)
+        .attr('x2', center + boxWidth / 4)
+        .attr('y1', y(d.min))
+        .attr('y2', y(d.min))
+        .attr('stroke', 'black');
+
+      svg.append('line')  // Max whisker
+        .attr('x1', center - boxWidth / 4)
+        .attr('x2', center + boxWidth / 4)
+        .attr('y1', y(d.max))
+        .attr('y2', y(d.max))
+        .attr('stroke', 'black');
+    });
+
+    svg.append('text')
+      .attr('x', width / 2)
+      .attr('y', height + margin.bottom - 5)
+      .attr('text-anchor', 'middle')
+      .text('University GPA');
+
+    svg.append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', -margin.left + 15)
+      .attr('x', -height / 2)
+      .attr('text-anchor', 'middle')
+      .text('Years to Promotion');
   }
 }

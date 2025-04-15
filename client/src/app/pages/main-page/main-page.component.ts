@@ -8,7 +8,6 @@ import { Visual2Component } from "@app/components/d3/visual-2/visual-2.component
 import { Visual3Component } from "@app/components/d3/visual-3/visual-3.component";
 import { Visual4Component } from "@app/components/d3/visual-4/visual-4.component";
 import { Visual5Component } from "@app/components/d3/visual-5/visual-5.component";
-import { Visual6Component } from "@app/components/d3/visual-6/visual-6.component";
 // import { ScatterVizComponent } from '@app/components/d3/scatter-viz/scatter-viz.component';
 // import { SankeyVizComponent } from '@app/components/d3/sankey-viz/sankey-viz.component';
 // import { StackedBarVizComponent } from '@app/components/d3/stacked-bar-viz/stacked-bar-viz.component';
@@ -26,7 +25,6 @@ import { Visual6Component } from "@app/components/d3/visual-6/visual-6.component
     Visual3Component,
     Visual4Component,
     Visual5Component,
-    Visual6Component,
   ],
   templateUrl: "./main-page.component.html",
   styleUrls: ["./main-page.component.scss"],
@@ -61,18 +59,6 @@ export class MainPageComponent {
   ];
 
   Questions4 = [
-    { id: "", text: "" },
-    { id: "", text: "" },
-    { id: "", text: "" },
-  ];
-
-  Answers4 = [
-    { id: "", text: "" },
-    { id: "", text: "" },
-    { id: "", text: "" },
-  ];
-
-  Questions5 = [
     {
       id: 'A1.4 (★★☆)',
       text: 'How do academic indicators influence the average time to promotion?'
@@ -83,7 +69,7 @@ export class MainPageComponent {
     }
   ];
 
-  Answers5 = [
+  Answers4 = [
     {
       id: 'A1.4 (★★☆)',
       text: 'This box plot shows how the number of years before a first promotion varies across GPA brackets. We observe a clear inverse trend: students with higher university GPAs tend to reach their first promotion significantly faster. The median time to promotion for students with GPAs above 3.5 is approximately 3 years, compared to nearly 5 years for those with GPAs below 2.5. The interquartile ranges also tend to be narrower for higher GPA groups, suggesting more consistent advancement. This suggests that academic excellence not only correlates with career access (as seen in other visuals) but also with faster upward mobility.'
@@ -94,7 +80,7 @@ export class MainPageComponent {
     }
   ];
 
-  Questions6 = [
+  Questions5 = [
     {
       id: "A3.1 (★★★)",
       text: "Existe-t-il des différences dans les résultats professionnels selon le domaine d’études choisi ",
@@ -109,7 +95,7 @@ export class MainPageComponent {
     },
   ];
 
-  Answers6= [
+  Answers5 = [
     { id: "", text: "" },
     { id: "", text: "" },
     { id: "", text: "" },
