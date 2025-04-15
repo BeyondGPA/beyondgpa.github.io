@@ -7,7 +7,7 @@ export class DataService {
   constructor(private http: HttpClient) {}
 
   async loadCareerData(): Promise<any[]> {
-    const csv = await this.http.get('assets/data/education_career_success.csv', 
+    const csv = await this.http.get('assets/data/education_career_success-3.csv', 
       { responseType: 'text' }).toPromise();
     return d3.csvParse(csv || '');
   }
