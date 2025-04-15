@@ -29,6 +29,7 @@ export class Visual4Component implements AfterViewInit {
     observer.observe(this.chartContainer.nativeElement);
   }
 
+
   renderBoxPlot(data: any[]): void {
     const margin = { top: 20, right: 30, bottom: 50, left: 40 };
     const width = 700 - margin.left - margin.right;
@@ -53,11 +54,11 @@ export class Visual4Component implements AfterViewInit {
         years: parseFloat(d.Years_to_Promotion)
       }));
 
-    const grouped = d3.groups(cleanData, d => Math.round(d.gpa * 2) / 2);
-    const labels = grouped.map(([g]) => g.toFixed(1));
+    const grouped = d3.groups(cleanData, d => Math.round(d.years));
+    const labels = grouped.map(([years]) => years.toString());
 
-    const summary = grouped.map(([gpa, records]) => {
-      const values = records.map(d => d.years).sort(d3.ascending);
+    const summary = grouped.map(([years, records]) => {
+      const values = records.map(d => d.gpa).sort(d3.ascending);
       const q1 = d3.quantile(values, 0.25)!;
       const median = d3.quantile(values, 0.5)!;
       const q3 = d3.quantile(values, 0.75)!;
@@ -66,18 +67,18 @@ export class Visual4Component implements AfterViewInit {
       const rawMax = d3.max(values);
       const min = Math.max(rawMin ?? q1, q1 - 1.5 * iqr);
       const max = Math.min(rawMax ?? q3, q3 + 1.5 * iqr);
-      return { gpa: +gpa, q1, median, q3, min, max };
+      return { years: +years, q1, median, q3, min, max };
     });
 
-    const x = d3.scaleBand()
+    const x = d3.scaleLinear()
+      .domain([0, d3.max(summary, d => d.max)! + 0.5])
+      .range([0, width]);
+
+    const y = d3.scaleBand()
       .domain(labels)
-      .range([0, width])
+      .range([height, 0])
       .paddingInner(0.3)
       .paddingOuter(0.1);
-
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(summary, d => d.max)! + 1])
-      .range([height, 0]);
 
     svg.append('g')
       .attr('transform', `translate(0,${height})`)
@@ -100,23 +101,23 @@ export class Visual4Component implements AfterViewInit {
       .style('opacity', 0);
 
     summary.forEach((d, i) => {
-      const center = x(d.gpa.toFixed(1))! + x.bandwidth() / 2;
-      const boxWidth = x.bandwidth() * 0.5;
+      const center = y(d.years.toString())! + y.bandwidth() / 2;
+      const boxHeight = y.bandwidth() * 0.5;
 
       svg.append('line')
-        .attr('x1', center)
-        .attr('x2', center)
-        .attr('y1', y(d.min))
-        .attr('y2', y(d.min))
+        .attr('y1', center)
+        .attr('y2', center)
+        .attr('x1', x(d.min))
+        .attr('x2', x(d.min))
         .attr('stroke', 'black')
         .transition().delay(i * 100).duration(400)
-        .attr('y2', y(d.max));
+        .attr('x2', x(d.max));
 
       const box = svg.append('rect')
-        .attr('x', center - boxWidth / 2)
-        .attr('width', boxWidth)
-        .attr('y', y(d.q3))
-        .attr('height', 0)
+        .attr('y', center - boxHeight / 2)
+        .attr('height', boxHeight)
+        .attr('x', x(d.q1))
+        .attr('width', 0)
         .attr('fill', '#69b3a2')
         .attr('cursor', 'pointer')
         .on('mousemove', (event) => {
@@ -126,7 +127,7 @@ export class Visual4Component implements AfterViewInit {
             .style('opacity', 1)
             .style('display', 'Block')
             .html(`
-              <strong>GPA:</strong> ${d.gpa}<br>
+              <strong>Years:</strong> ${d.years}<br>
               Q1: ${d.q1}<br>
               Median: ${d.median}<br>
               Q3: ${d.q3}<br>
@@ -141,33 +142,32 @@ export class Visual4Component implements AfterViewInit {
         });
 
       box.transition().delay(i * 100).duration(500)
-        .attr('height', y(d.q1) - y(d.q3));
+        .attr('width', x(d.q3) - x(d.q1));
 
       svg.append('line')
-      .attr('class', 'median-pulse')
-      .attr('x1', center - boxWidth / 2)
-      .attr('x2', center + boxWidth / 2)
-      .attr('y1', y(d.median))
-      .attr('y2', y(d.median))
-      .attr('stroke', 'black')
-      .attr('stroke-width', 2)
-      .style('opacity', 0)
-      .transition().delay(i * 100 + 400).duration(300)
-      .style('opacity', 1);
-      
+        .attr('class', 'median-pulse')
+        .attr('y1', center - boxHeight / 2)
+        .attr('y2', center + boxHeight / 2)
+        .attr('x1', x(d.median))
+        .attr('x2', x(d.median))
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+        .style('opacity', 0)
+        .transition().delay(i * 100 + 400).duration(300)
+        .style('opacity', 1);
 
       svg.append('line')  // Min whisker
-        .attr('x1', center - boxWidth / 4)
-        .attr('x2', center + boxWidth / 4)
-        .attr('y1', y(d.min))
-        .attr('y2', y(d.min))
+        .attr('y1', center - boxHeight / 4)
+        .attr('y2', center + boxHeight / 4)
+        .attr('x1', x(d.min))
+        .attr('x2', x(d.min))
         .attr('stroke', 'black');
 
       svg.append('line')  // Max whisker
-        .attr('x1', center - boxWidth / 4)
-        .attr('x2', center + boxWidth / 4)
-        .attr('y1', y(d.max))
-        .attr('y2', y(d.max))
+        .attr('y1', center - boxHeight / 4)
+        .attr('y2', center + boxHeight / 4)
+        .attr('x1', x(d.max))
+        .attr('x2', x(d.max))
         .attr('stroke', 'black');
     });
 
@@ -175,13 +175,13 @@ export class Visual4Component implements AfterViewInit {
       .attr('x', width / 2)
       .attr('y', height + margin.bottom - 5)
       .attr('text-anchor', 'middle')
-      .text('University GPA');
+      .text('Years to Promotion');
 
     svg.append('text')
       .attr('transform', 'rotate(-90)')
       .attr('y', -margin.left + 15)
       .attr('x', -height / 2)
       .attr('text-anchor', 'middle')
-      .text('Years to Promotion');
+      .text('University GPA');
   }
 }

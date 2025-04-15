@@ -1,5 +1,3 @@
-// Visual6Component - Delays rendering until chart enters view
-
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 import { DataService } from '@app/services/data/data.service';
@@ -72,13 +70,17 @@ export class Visual5Component implements AfterViewInit {
 
     const maleAvg = avg(male);
     const femaleAvg = avg(female);
+    const allValues = [...maleAvg, ...femaleAvg].map(d => d.Value);
+    const minVal = d3.min(allValues)!;
+    const maxVal = d3.max(allValues)!;
+    const buffer = (maxVal - minVal) * 0.1;
 
     const x = d3.scaleLinear()
       .domain(d3.extent([...maleAvg, ...femaleAvg], d => d.Age) as [number, number])
       .range([0, width]);
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max([...maleAvg, ...femaleAvg], d => d.Value)! * 1.1])
+      .domain([minVal - buffer, maxVal + buffer])
       .range([height, 0]);
 
     const lineGen = d3.line<any>()
