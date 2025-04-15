@@ -1,16 +1,9 @@
-<section class="viz-section">
-  <header class="viz-header">
-    <h2 class="viz-title"> </h2>
-  </header>
-
-  <div class="viz-container">
-    <div class="viz-controls">
-      <label for="fieldSelect"> -- Choose a field -- </label>
-      <select id="fieldSelect" (change)="onFieldChange($event)">
-        <option *ngFor="let field of fieldsOfStudy" [value]="field">{{ field }}</option>
-      </select>
-    </div>
-
-    <div #chart class="viz-d3-container"></div>
+<div class="container">
+  <div class="options">
+    <select id="fieldSelect" (change)="onFieldChange($event)">
+      <option *ngFor="let field of fieldsOfStudy" [value]="field">{{ field }}</option>
+    </select>
   </div>
-</section>
+
+  <div #chart class="chart-container"></div>
+</div>
