@@ -1,200 +1,161 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
-import * as d3Sankey from 'd3-sankey';
-import { FormsModule } from '@angular/forms';
 import { DataService } from '@app/services/data/data.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'app-visual-3',
   templateUrl: './visual-3.component.html',
-  imports: [FormsModule],
-  styleUrls: ['./visual-3.component.scss']
+  styleUrls: ['./visual-3.component.scss'],
+  imports: [CommonModule]
 })
 export class Visual3Component implements AfterViewInit {
   @ViewChild('chart') chartContainer!: ElementRef;
+
   data: any[] = [];
+  fieldsOfStudy: string[] = [];
+  selectedField = '';
 
-  gpaGroups: string[] = ["2-2.5", "2.5-3.0", "3.0-3.5", "3.5-4.0"];
-  satGroups: string[] = ["1-600", "601-1000", "1001-1300", "1301-1600"];
-  rankGroups: string[] = ["1-200", "201-400", "401-600", "601-800", "801-1000"];
+  constructor(private dataService: DataService) { }
 
-  selectedCategory: 'promotion' | 'jobLevel' = 'promotion';
-  leftSelected: 'gpa' | 'sat' | 'rank' = 'gpa';
-
-  constructor(private dataService: DataService) {}
-
-  ngAfterViewInit(): void {
-    this.dataService.loadCareerData().then(data => {
-      this.data = data.map(student => ({
-        ...student,
-        GPA_Group: this.getGPAGroup(+student.University_GPA),
-        SAT_Group: this.getSATGroup(+student.SAT_Score),
-        University_Rank_Group: this.getUniversityRankGroup(+student.University_Ranking),
-      }));
-      this.renderSankey();
-    });
+  async ngAfterViewInit(): Promise<void> {
+    const data = await this.dataService.loadCareerData();
+    this.data = data;
+    this.fieldsOfStudy = [...new Set(data.map(d => d.Field_of_Study))];
+    this.selectedField = this.fieldsOfStudy[0];
+    this.renderChart(data);
   }
 
-  renderSankey(): void {
-    d3.select(this.chartContainer.nativeElement).selectAll("svg").remove();
-    const sankeyData = this.processDataForSankey(this.selectedCategory);
+  onFieldChange(event: Event): void {
+    this.selectedField = (event.target as HTMLSelectElement).value;
+    this.renderChart(this.data);
+  }
 
-    const width = 600;
-    const height = 400;
+  renderChart(data: any[]): void {
+    const element = this.chartContainer.nativeElement;
+    d3.select(element).selectAll('*').remove();
 
-    const svg = d3.select(this.chartContainer.nativeElement)
+    const filteredData = data.filter(d => d.Field_of_Study === this.selectedField);
+
+    const margin = { top: 20, right: 80, bottom: 50, left: 60 };
+    const width = 700 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select(element)
       .append('svg')
-      .attr('viewBox', `0 0 ${width} ${height}`)
-      .attr('preserveAspectRatio', 'xMidYMid meet')
-      .attr("width", width)
-      .attr("height", height)
-      .style('display', 'block')
-      .style('max-width', '100%')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const sankey = d3Sankey.sankey()
-      .nodeWidth(15)
-      .nodePadding(10)
-      .extent([[1, 1], [width - 1, height - 5]]);
+    const x = d3.scaleLinear()
+      .domain([0, 10])
+      .range([0, width]);
 
-    const { nodes, links } = sankey(sankeyData) as {
-      nodes: Array<{ name: string } & d3Sankey.SankeyNodeMinimal<{}, {}>>,
-      links: d3Sankey.SankeyLinkMinimal<{}, {}>[]
-    };
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(filteredData, d => +d.Projects_Completed)! + 1])
+      .range([height, 0]);
 
-    const gpaGroups = ["Low", "Medium-Low", "Medium-High", "High"];
-    const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(gpaGroups);
-    const nodeMap = new Map(nodes.map(d => [d.name, d]));
+    const color = d3.scaleSequential(d3.interpolateBlues)
+      .domain([0, d3.max(filteredData, d => +d.Job_Offers)!]);
 
-    svg.append("g")
-      .selectAll(".link")
-      .data(links)
-      .join("path")
-      .attr("class", "link")
-      .attr("d", d3Sankey.sankeyLinkHorizontal())
-      .attr("stroke-width", d => Math.max(1, d.width ?? 0))
-      .style("stroke", d => {
-        const sourceNode = typeof d.source === 'object' && 'name' in d.source ? nodeMap.get((d.source as { name: string }).name) : undefined;
-        return sourceNode ? colorScale(sourceNode.name) : "#999";
+    svg.append('g')
+      .attr('transform', `translate(0,${height})`)
+      .call(d3.axisBottom(x).ticks(10))
+      .append('text')
+      .attr('x', width / 2)
+      .attr('y', 40)
+      .attr('fill', 'black')
+      .style('text-anchor', 'middle')
+      .text('Networking score');
+
+    svg.append('g')
+      .call(d3.axisLeft(y))
+      .append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('x', -height / 2)
+      .attr('y', -45)
+      .attr('fill', 'black')
+      .style('text-anchor', 'middle')
+      .text('Completed projects');
+
+    const tooltip = d3.select(element)
+      .append('div')
+      .style('position', 'absolute')
+      .style('background', '#fff')
+      .style('padding', '6px')
+      .style('border', '1px solid #ccc')
+      .style('border-radius', '4px')
+      .style('pointer-events', 'none')
+      .style('display', 'none');
+
+    svg.selectAll('circle')
+      .data(filteredData)
+      .enter()
+      .append('circle')
+      .attr('cx', d => x(+d.Networking_Score))
+      .attr('cy', d => y(+d.Projects_Completed))
+      .attr('r', 5)
+      .attr('fill', d => color(+d.Job_Offers))
+      .on('mouseover', function (event, d) {
+        tooltip
+          .style('display', 'block')
+          .html(
+            `Étudiant : ${d.Student_ID}<br/>
+             GPA : ${d.University_GPA}<br/>
+             Réseautage : ${d.Networking_Score}<br/>
+             Projets : ${d.Projects_Completed}<br/>
+             Offres : ${d.Job_Offers}`
+          );
+        d3.select(this).attr('stroke', 'black').attr('stroke-width', 1.5);
       })
-      .style("fill", "none")
-      .style("opacity", 0.7);
-
-    svg.append("g")
-      .selectAll(".node")
-      .data(nodes)
-      .join("g")
-      .attr("class", "node")
-      .attr("transform", d => `translate(${d.x0},${d.y0})`)
-      .call(g => g.append("rect")
-        .attr("height", d => (d.y1 ?? 0) - (d.y0 ?? 0))
-        .attr("width", d => (d.x1 ?? 0) - (d.x0 ?? 0))
-        .style("fill", d => colorScale(d.name) || "#ddd")
-      );
-
-    svg.append("g")
-      .selectAll(".node")
-      .data(nodes)
-      .join("g")
-      .attr("class", "node")
-      .attr("transform", d => `translate(${d.x0},${d.y0})`)
-      .call(g => g.append("text")
-        .attr("x", d => {
-          const isLeft = (d.x0 ?? 0) < width / 2;
-          const nodeWidth = (d.x1 ?? 0) - (d.x0 ?? 0);
-          const nameLength = d.name.length;
-          return isLeft ? nodeWidth + 12 : -10 - nameLength * 6;
-        })
-        .attr("y", d => ((d.y1 ?? 0) - (d.y0 ?? 0)) / 2 + 5)
-        .attr("dy", "0.35em")
-        .attr("text-anchor", d => (d.x0 ?? 0) < width / 2 ? "start" : "end")
-        .text(d => d.name)
-        .style("font-size", "14px")
-        .style("fill", "#000")
-        .style("font-weight", "bold")
-      );
-  }
-
-  processDataForSankey(selectedCategory: 'Rank' | 'promotion' | 'jobLevel'): any {
-    const links: { source: number; target: number; value: number }[] = [];
-    const nodes: { name: string }[] = [];
-
-    const leftSideGroups = this.leftSelected === 'gpa' 
-      ? this.gpaGroups 
-      : this.leftSelected === 'sat' 
-        ? this.satGroups 
-        : this.rankGroups;
-
-    const rightSideGroups = selectedCategory === 'Rank' 
-      ? this.rankGroups 
-      : selectedCategory === 'promotion' 
-        ? ["Year 1", "Year 2", "Year 3", "Year 4", "Year 5+"] 
-        : ["Entry", "Mid", "Senior"];
-
-    leftSideGroups.forEach(group => nodes.push({ name: group }));
-    rightSideGroups.forEach(group => nodes.push({ name: group }));
-
-    leftSideGroups.forEach((leftGroup, leftIndex) => {
-      rightSideGroups.forEach((rightGroup, rightIndex) => {
-        links.push({
-          source: leftIndex,
-          target: leftSideGroups.length + rightIndex,
-          value: this.calculateGroupFlow(leftGroup, rightGroup, selectedCategory)
-        });
+      .on('mousemove', event => {
+        tooltip
+          .style('left', (event.pageX + 10) + 'px')
+          .style('top', (event.pageY - 20) + 'px');
+      })
+      .on('mouseout', function () {
+        tooltip.style('display', 'none');
+        d3.select(this).attr('stroke', 'none');
       });
-    });
 
-    return { nodes, links };
-  }
+    // Légende couleur
+    const legendX = width + 20;
 
-  calculateGroupFlow(leftGroup: string, rightGroup: string, category: 'Rank' | 'promotion' | 'jobLevel'): number {
-    return this.data.filter(d => {
-      const leftValue = this.leftSelected === 'gpa' 
-        ? this.getGPAGroup(parseFloat(d['University_GPA'])) 
-        : this.leftSelected === 'sat' 
-          ? this.getSATGroup(parseInt(d['SAT_Score'])) 
-          : this.getUniversityRankGroup(parseInt(d['University_Ranking']));
+    const defs = svg.append('defs');
+    const gradient = defs.append('linearGradient')
+      .attr('id', 'color-gradient')
+      .attr('x1', '0%').attr('y1', '0%')
+      .attr('x2', '0%').attr('y2', '100%');
 
-      const rightValue = category === 'Rank'
-        ? this.getUniversityRankGroup(parseInt(d['University_Ranking']))
-        : category === 'promotion'
-          ? this.getPromotionGroup(parseInt(d['Years_to_Promotion']))
-          : d['Current_Job_Level'];
+    for (let i = 0; i <= 10; i++) {
+      gradient.append('stop')
+        .attr('offset', `${i * 10}%`)
+        .attr('stop-color', color(i));
+    }
 
-      return leftValue === leftGroup && rightValue === rightGroup;
-    }).length;
-  }
+    svg.append('rect')
+      .attr('x', legendX)
+      .attr('y', 0)
+      .attr('width', 15)
+      .attr('height', height)
+      .style('fill', 'url(#color-gradient)');
 
-  getGPAGroup(gpa: number): string {
-    if (gpa >= 2.0 && gpa < 2.5) return "2-2.5";
-    if (gpa >= 2.5 && gpa < 3.0) return "2.5-3.0";
-    if (gpa >= 3.0 && gpa < 3.5) return "3.0-3.5";
-    if (gpa >= 3.5 && gpa <= 4.0) return "3.5-4.0";
-    return "Unknown";
-  }
+    svg.append('text')
+      .attr('x', legendX + 7.5)
+      .attr('y', -10)
+      .attr('text-anchor', 'middle')
+      .attr('fill', 'black')
+      .style('font-size', '12px')
+      .text("Job offers");
 
-  getSATGroup(sat: number): string {
-    if (sat >= 1 && sat <= 600) return "1-600";
-    if (sat > 600 && sat <= 1000) return "601-1000";
-    if (sat > 1000 && sat <= 1300) return "1001-1300";
-    if (sat > 1300 && sat <= 1600) return "1301-1600";
-    return "Unknown";
-  }
+    const legendScale = d3.scaleLinear()
+      .domain([d3.max(filteredData, d => +d.Job_Offers)!, 0])
+      .range([0, height]);
 
-  getUniversityRankGroup(rank: number): string {
-    if (rank >= 1 && rank <= 200) return "1-200";
-    if (rank > 200 && rank <= 400) return "201-400";
-    if (rank > 400 && rank <= 600) return "401-600";
-    if (rank > 600 && rank <= 800) return "601-800";
-    if (rank > 800 && rank <= 1000) return "801-1000";
-    return "Unknown";
-  }
-
-  getPromotionGroup(years: number): string {
-    if (years === 1) return "Year 1";
-    if (years === 2) return "Year 2";
-    if (years === 3) return "Year 3";
-    if (years === 4) return "Year 4";
-    return "Year 5+";
+    svg.append('g')
+      .attr('transform', `translate(${legendX + 15},0)`)
+      .call(d3.axisRight(legendScale));
   }
 }

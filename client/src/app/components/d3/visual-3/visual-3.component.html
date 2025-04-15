@@ -1,18 +1,16 @@
-<div class="container">
-  <div class="options">
-    <select [(ngModel)]="leftSelected" (change)="renderSankey()">
-      <option value="rank">University Rank</option>
-      <option value="sat">SatScore</option>
-      <option value="gpa">GPA</option>
-    </select>
+<section class="viz-section">
+  <header class="viz-header">
+    <h2 class="viz-title"> </h2>
+  </header>
 
-    <select [(ngModel)]="selectedCategory" (change)="renderSankey()">
-      <option value="promotion">Years to Promotion</option>
-      <option value="jobLevel">Current Job Level</option>
-    </select>
-  </div>
+  <div class="viz-container">
+    <div class="viz-controls">
+      <label for="fieldSelect"> -- Choose a field -- </label>
+      <select id="fieldSelect" (change)="onFieldChange($event)">
+        <option *ngFor="let field of fieldsOfStudy" [value]="field">{{ field }}</option>
+      </select>
+    </div>
 
-  <div class="chart-container">
-    <div #chart></div>
+    <div #chart class="viz-d3-container"></div>
   </div>
-</div>
+</section>

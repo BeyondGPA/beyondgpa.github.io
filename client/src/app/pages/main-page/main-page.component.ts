@@ -35,29 +35,29 @@ export class MainPageComponent {
   Questions1 = [
     { id: 'A1.1 (★★★)', text: 'To what extent does a high GPA in university correlate with career success?' }
   ];
-  
+
   Answers1 = [
     { id: 'A1.1 (★★★)', text: 'Students with a high GPA tend to receive higher starting salaries and more job offers, indicating a positive correlation between academic performance and professional success.' }
   ];
-  
+
   Questions2 = [
     { id: 'A1.2 (★★★)', text: 'What is the impact of academic indicators on starting salary?' },
   ];
-  
+
   Answers2 = [
     { id: 'A1.2 (★★★)', text: 'Theres no impact' },
-   
+
   ];
-  
+
   Questions3 = [
-    { id: 'A1.3 (★★★) ', text: 'Is there a correlation between academic indicators (GPA, SAT, ranking) and the job level?' },
-    { id: 'A1.4 (★★☆)', text: 'How do academic indicators influence the average time required to get a promotion?' },
+    { id: 'A2.1 (★★★) ', text: 'Can internships, projects and certifications compensate for a less successful academic profile in terms of professional opportunities?' },
+    { id: 'A2.2 (★★☆)', text: 'What is the combined impact of the number of internships and certifications on starting salary and career progression?' },
   ];
-  
+
 
   Answers3 = [
-    { id: 'A1.3 (★★★) ', text: 'There is no correlation' },
-    { id: 'A1.4 (★★☆)', text: 'They do not seem to influence the average time to get a promotion' },
+    { id: 'A2.1 (★★★) ', text: '' },
+    { id: 'A2.2 (★★☆)', text: '' },
   ];
 
   Questions4 = [
