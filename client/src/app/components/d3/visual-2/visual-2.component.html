@@ -1,14 +1,19 @@
-<div>
+<div class="container">
   <select id="x-axis" [(ngModel)]="selectedX" (change)="updateChart()">
     <option value="University_GPA">University GPA</option>
     <option value="University_Ranking">University ranking</option>
     <option value="SAT_Score">SAT score</option>
   </select>
-</div>
 
-<div class="chart-container" #chart></div>
+  <div class="chart-container" #chart></div>
 
-<div class="navigation-buttons">
-  <button (click)="previousCharts()">&#8592;</button>
-  <button (click)="nextCharts()">&#8594;</button>
+  <div class="navigation-buttons">
+    <button (click)="previousCharts()" [disabled]="isPreviousDisabled">
+      <span class="button_top"> Previous </span>
+    </button>
+  
+    <button (click)="nextCharts()" [disabled]="isNextDisabled">
+      <span class="button_top"> Next </span>
+    </button>
+  </div>
 </div>

@@ -1,30 +1,22 @@
-div {
-    margin: 20px;
-  }
-  
-  label {
-    font-weight: bold;
-    margin-right: 30px;
-    margin-left: 30px;
-    margin-bottom: 10px;
-    display: inline-block;
-    color: #444;
-  }
-  
-  select {
-    padding: 10px;
-    border: None;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-  }
-  
-  select:focus {
-    outline: none;
-  }
+.container {
+  margin: 20px;
+}
+
+select {
+  padding: 10px;
+  border: None;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  margin-bottom: 20px;
+}
+
+select:focus {
+  outline: none;
+}
 
 .chart-container {
   display: grid;
@@ -50,20 +42,49 @@ div {
 .navigation-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-bottom: 10px;
+  gap: 40px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 
-  button {
-    padding: 6px 12px;
-    font-size: 18px;
-    border: none;
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-    border-radius: 4px;
-    cursor: pointer;
+button {
+  width: 33%;
+  --button_radius: 0.75em;
+  --button_color: var(--secondary-color);
+  --button_outline_color: var(--text-color);
+  font-size: 17px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--button_radius);
+  background: var(--button_outline_color);
+}
 
-    &:hover {
-      background-color: var(--primary-color);
-    }
-  }
+.button_top {
+  display: block;
+  box-sizing: border-box;
+  border: 2px solid var(--button_outline_color);
+  border-radius: var(--button_radius);
+  padding: 0.75em 1.5em;
+  background: var(--button_color);
+  color: var(--button_outline_color);
+  transform: translateY(-0.2em);
+  transition: transform 0.1s ease;
+}
+
+button:hover .button_top {
+  transform: translateY(-0.33em);
+}
+
+button:active .button_top {
+  transform: translateY(0);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+button:disabled .button_top {
+  transform: none;
 }

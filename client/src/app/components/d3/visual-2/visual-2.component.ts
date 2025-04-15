@@ -146,4 +146,12 @@ export class Visual2Component implements AfterViewInit {
       this.renderCharts();
     }
   }
+
+  get isPreviousDisabled(): boolean {
+    return this.currentIndex === 0;
+  }
+  
+  get isNextDisabled(): boolean {
+    return this.currentIndex + this.chartsPerPage >= this.fieldOptions.length;
+  }
 }
