@@ -85,21 +85,30 @@ export class MainPageComponent {
   Questions5 = [
     {
       id: "A3.1 (★★★)",
-      text: "Existe-t-il des différences dans les résultats professionnels selon le domaine d’études choisi ",
+      text: "Do age and gender influence job satisfaction?",
     },
     {
-      id: "A3.2 (★★☆) ",
-      text: "Les variables démographiques, telles que l’âge et le genre, influencent t-elles le salaire initial?",
+      id: "A3.2 (★★☆)",
+      text: "Do demographic variables, such as age and gender, influence starting salary?",
     },
     {
-      id: "A3.3 (★☆) s",
-      text: "Les variables démographiques, telles que l’âge et le genre, influencent t-elles la performance académique?",
+      id: "A3.3 (★☆)",
+      text: "Do demographic variables, such as age and gender, influence work-life balance?",
     },
   ];
 
   Answers5 = [
-    { id: "", text: "" },
-    { id: "", text: "" },
-    { id: "", text: "" },
+    {
+      id: "A3.1 (★★★)",
+      text: "The first graph illustrates variations in initial salary by age and gender. Overall, salaries increase slightly with age but fluctuate more for certain age brackets. We observe distinct trends between men and women, with salary gaps appearing at several points. This suggests that both age and gender impact starting salary, confirming a correlation between demographic variables and income at entry.",
+    },
+    {
+      id: "A3.2 (★★☆)",
+      text: "The second graph shows that job satisfaction also varies by age and gender. While both curves follow similar trajectories, men tend to report slightly higher satisfaction at specific ages. The variations in peaks and dips imply that perceived professional satisfaction is indeed influenced by demographic characteristics.",
+    },
+    {
+      id: "A3.3 (★☆)",
+      text: "In the third graph, we observe how work-life balance perception shifts with age for both genders. The gap between male and female responses suggests a gendered experience in balancing personal and professional life. Although the correlation is less pronounced than in the other two graphs, it still shows that age and gender have a moderate influence on this aspect of professional well-being.",
+    },
   ];
 }
