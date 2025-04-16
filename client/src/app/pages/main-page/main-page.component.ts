@@ -45,7 +45,7 @@ export class MainPageComponent {
   ];
 
   Answers2 = [
-    { id: 'A1.2 (★★★)', text: 'Theres no impact' },
+    { id: 'A1.2 (★★★)', text: 'The graphs suggest that academic results have a limited impact on starting salary. Graduates with different degree classifications earn similar starting salaries, with only minor variations. This indicates that factors other than academic performance may play a larger role in determining initial pay.' },
 
   ];
 
