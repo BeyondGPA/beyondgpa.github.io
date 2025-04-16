@@ -37,7 +37,7 @@ export class MainPageComponent {
   ];
 
   Answers1 = [
-    { id: 'A1.1 (★★★)', text: 'Students with a high GPA tend to receive higher starting salaries and more job offers, indicating a positive correlation between academic performance and professional success.' }
+    { id: 'A1.1 (★★★)', text: 'Students with high GPAs tend to get promoted quicker on average than those with lesser GPAs indicating a positive correlation between academic performance and professional success as the median for each successive group is significantly higher than the last.' }
   ];
 
   Questions2 = [
