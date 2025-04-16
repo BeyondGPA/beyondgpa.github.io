@@ -51,13 +51,13 @@ export class MainPageComponent {
 
   Questions3 = [
     { id: 'A2.1 (★★★) ', text: 'Can internships, projects and certifications compensate for a less successful academic profile in terms of professional opportunities?' },
-    { id: 'A2.4 (★★☆)', text: 'Is there a significant interaction between project work and the development of non-academic skills in obtaining job offers?' },
+    { id: 'A2.4 (★★☆)', text: 'Do different fields of study show distinct patterns in how job offers relate to networking and project completion?' },
   ];
 
 
   Answers3 = [
     { id: 'A2.1 (★★★) ', text: 'The scatter plot shows that students with high project completion and networking scores tend to receive more job offers, even across fields where academic GPA may be less emphasized, The color intensity (job offers) often increases with projects completed, suggesting their value regardless of GPA.  This suggests that practical experience and soft skills can make up for a weaker academic profile in terms of employability.' },
-    { id: 'A2.4 (★★☆)', text: 'The scatter plot reveals a significant interaction between project completion and non-academic skills like networking for example, as students who score high on both dimensions tend to receive more job offers, regardless of their academic background.' },
+    { id: 'A2.4 (★★☆)', text: 'Yes, the visualizations reveal that different fields of study show distinct patterns in how job offers relate to networking and project completion. In Business and Computer Science, students with high scores in both areas tend to receive the most job offers. Arts and Law display more scattered patterns, indicating that other factors might influence employability in these fields. Engineering and Mathematics show a steady trend where project completion has a stronger impact, while Medicine presents a more balanced effect of both variables. Overall, the importance of practical experience and soft skills varies by discipline/field.' },
   ];
 
   Questions4 = [

@@ -2,18 +2,20 @@
   <app-header></app-header>
 
   <div class="timeline-container">
-    <app-viz-section sectionId="1." section="Visual 1" description="Description of the first visual."
+    <app-viz-section sectionId="1." section="Visual 1"
+      description="This visualization uses a "
       [questions]="Questions1" [answers]="Answers1">
       <app-visual-1></app-visual-1>
     </app-viz-section>
 
-    <app-viz-section sectionId="2." section="Visual 2" description="Description of the second visual."
+    <app-viz-section sectionId="2." section="Visual 2"
+      description="This visualization uses a "
       [questions]="Questions2" [answers]="Answers2">
       <app-visual-2></app-visual-2>
     </app-viz-section>
 
-    <app-viz-section sectionId="3." section="Visual 3"
-      description="This scatter plot visualizes the relationship between networking score -> X-axis and completed projects  -> Y-axis for students in a selected field of study. Each dot represents one student, and the color intensity indicates the number of job offers received — from lighter (fewer offers) to darker blue (more offers). Use the dropdown menu to filter by field of study"
+    <app-viz-section sectionId="3." section="Scatter plot : Impact of networking score and completed projects on the number of job offers received"
+      description="This visualization uses a scatter plot to show the relationship between networking score -> X-axis and completed projects  -> Y-axis for students in a selected field of study. Each dot represents one student, and the color intensity indicates the number of job offers received — from lighter (fewer offers) to darker blue (more offers). Use the dropdown menu to filter by field of study"
       [questions]="Questions3" [answers]="Answers3">
       <app-visual-3></app-visual-3>
     </app-viz-section>
@@ -25,7 +27,8 @@
     </app-viz-section>
 
 
-    <app-viz-section sectionId="5." section="Line Plots: Impact of Gender and Age on Career Outcomes" description="This set of line charts explores how demographic factors—namely age and gender—relate to key early career outcomes. The visual compares trends in starting salary, job satisfaction, and work-life balance across age brackets for men and women, helping us identify disparities and potential patterns linked to these variables."
+    <app-viz-section sectionId="5." section="Line Plots: Impact of Gender and Age on Career Outcomes"
+      description="This visualization uses a  set of line charts explores how demographic factors—namely age and gender—relate to key early career outcomes. The visual compares trends in starting salary, job satisfaction, and work-life balance across age brackets for men and women, helping us identify disparities and potential patterns linked to these variables."
       [questions]="Questions5" [answers]="Answers5">
       <app-visual-5></app-visual-5>
     </app-viz-section>
