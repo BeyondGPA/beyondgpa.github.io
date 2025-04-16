@@ -1,0 +1,35 @@
+.viz-transition {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem 2rem;
+  color: var(--text-color);
+  text-align: center;
+  animation: fadeIn 1s ease-in;
+}
+
+.transition-card {
+  background: var(--viz-section-color);
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 900px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.transition-title {
+  font-size: 2rem;
+  color: var(--highlight-color);
+  margin-bottom: 1rem;
+}
+
+.transition-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  opacity: 0.85;
+  margin-bottom: 1rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}

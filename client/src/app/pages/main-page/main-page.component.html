@@ -3,22 +3,28 @@
 
   <div class="timeline-container">
     <app-viz-section sectionId="1." section="Box Plot: Impact of GPA on current job title"
-      description="This visualization uses a box-plot to show the relationship between GPA and the current job title of students who graduated at the same time. "
+      description="This visualization uses a box-plot to show the relationship between GPA and the current job title of students who graduated at the same time."
       [questions]="Questions1" [answers]="Answers1">
       <app-visual-1></app-visual-1>
     </app-viz-section>
 
+    <app-viz-transition [title]="Transitions[0].title" [text]="Transitions[0].text"></app-viz-transition>
+
     <app-viz-section sectionId="2." section="Bar Chart: Impact of Academic Results on Starting Salary"
-      description="This visualization uses a bar chart to examin the relationship between degree classification and starting salary. By comparing average earnings across different academic result categories, the visual reveals whether stronger academic performance correlates with higher initial pay in early career stages."
+      description="This visualization uses a bar chart to examine the relationship between degree classification and starting salary. By comparing average earnings across different academic result categories, the visual reveals whether stronger academic performance correlates with higher initial pay in early career stages."
       [questions]="Questions2" [answers]="Answers2">
       <app-visual-2></app-visual-2>
     </app-viz-section>
 
-    <app-viz-section sectionId="3." section="Scatter plot : Impact of networking score and completed projects on the number of job offers received"
-      description="This visualization uses a scatter plot to show the relationship between networking score -> X-axis and completed projects  -> Y-axis for students in a selected field of study. Each dot represents one student, and the color intensity indicates the number of job offers received — from lighter (fewer offers) to darker blue (more offers). Use the dropdown menu to filter by field of study"
+    <app-viz-transition [title]="Transitions[1].title" [text]="Transitions[1].text"></app-viz-transition>
+
+    <app-viz-section sectionId="3." section="Scatter Plot: Projects & Networking vs Job Offers"
+      description="This visualization shows the relationship between networking score and completed projects for students in a selected field of study. Each dot represents one student, and the color intensity indicates the number of job offers received — from lighter (fewer offers) to darker blue (more offers)."
       [questions]="Questions3" [answers]="Answers3">
       <app-visual-3></app-visual-3>
     </app-viz-section>
+
+    <app-viz-transition [title]="Transitions[2].title" [text]="Transitions[2].text"></app-viz-transition>
 
     <app-viz-section sectionId="4." section="Box Plot: Academic Performance vs. Time to Promotion"
       description="This visualization uses a box plot to show how university GPA influences the time it takes students to receive their first promotion. It allows us to explore both central trends and variability across GPA brackets."
@@ -26,13 +32,15 @@
       <app-visual-4></app-visual-4>
     </app-viz-section>
 
+    <app-viz-transition [title]="Transitions[3].title" [text]="Transitions[3].text"></app-viz-transition>
 
     <app-viz-section sectionId="5." section="Line Plots: Impact of Gender and Age on Career Outcomes"
-      description="This visualization uses a  set of line charts explores how demographic factors—namely age and gender—relate to key early career outcomes. The visual compares trends in starting salary, job satisfaction, and work-life balance across age brackets for men and women, helping us identify disparities and potential patterns linked to these variables."
+      description="This set of line charts explores how demographic factors—namely age and gender—relate to key early career outcomes. The visual compares trends in starting salary, job satisfaction, and work-life balance across age brackets for men and women."
       [questions]="Questions5" [answers]="Answers5">
       <app-visual-5></app-visual-5>
     </app-viz-section>
 
+    <app-outro-summary></app-outro-summary>
   </div>
 
   <footer>

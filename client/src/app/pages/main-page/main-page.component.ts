@@ -8,6 +8,8 @@ import { Visual2Component } from "@app/components/d3/visual-2/visual-2.component
 import { Visual3Component } from "@app/components/d3/visual-3/visual-3.component";
 import { Visual4Component } from "@app/components/d3/visual-4/visual-4.component";
 import { Visual5Component } from "@app/components/d3/visual-5/visual-5.component";
+import { VizTransitionComponent } from "@app/components/viz-transition/viz-transition.component";
+import { OutroSummaryComponent } from "@app/components/outro-summary/outro-summary.component";
 
 // import { ScatterVizComponent } from '@app/components/d3/scatter-viz/scatter-viz.component';
 // import { SankeyVizComponent } from '@app/components/d3/sankey-viz/sankey-viz.component';
@@ -22,6 +24,8 @@ import { Visual5Component } from "@app/components/d3/visual-5/visual-5.component
     FormsModule,
     HeaderComponent,
     VizSectionComponent,
+    VizTransitionComponent,
+    OutroSummaryComponent,
     Visual1Component,
     Visual2Component,
     Visual3Component,
@@ -110,5 +114,37 @@ export class MainPageComponent {
       id: "A3.3 (★☆)",
       text: "In the third graph, we observe how work-life balance perception shifts with age for both genders. The gap between male and female responses suggests a gendered experience in balancing personal and professional life. Although the correlation is less pronounced than in the other two graphs, it still shows that age and gender have a moderate influence on this aspect of professional well-being.",
     },
+  ];
+
+  Transitions = [
+    {
+      title: "GPA: A Career Launchpad?",
+      text: [
+        "Our first analysis shows a clear link between GPA and current job title.",
+        "But does academic performance really open all doors? Let’s look at compensation — is the link just as strong when money's on the line?"
+      ]
+    },
+    {
+      title: "If Not GPA… Then What?",
+      text: [
+        "So GPA matters for prestige — but not for pay.",
+        "Maybe soft skills and real-world experience are the real MVPs.",
+        "Let’s explore how projects and networking shape job outcomes."
+      ]
+    },
+    {
+      title: "What About Long-Term Growth?",
+      text: [
+        "Skills may get you hired — but do they help you grow?",
+        "Let’s zoom out and look at upward mobility: how long it takes to climb the ladder."
+      ]
+    },
+    {
+      title: "Is It Fair for Everyone?",
+      text: [
+        "We’ve talked about GPA, experience, and promotions. But what about fairness?",
+        "Let’s explore how gender and age shape career outcomes and satisfaction."
+      ]
+    }
   ];
 }
