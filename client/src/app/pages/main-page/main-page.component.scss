@@ -4,7 +4,7 @@ main {
   
 .timeline-container {
   position: relative;
-  padding: 0 30px;
+  padding: 0 6%;
 
 }
 
@@ -29,4 +29,26 @@ footer {
     font-size: 14px;
     text-align: center;
   }
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 100px;
+  background-color: #0000008a;
+  color: white;
+  font-size: 10px;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 105%;
+  margin-left: -73px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.about:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }

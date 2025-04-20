@@ -4,8 +4,9 @@
   border-radius: 12px;
   padding: 2rem;
   margin: 2rem 0;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease;
+  animation: fadeIn 1s ease-in;
   
   .viz-header {
     display: flex;
@@ -74,4 +75,10 @@
       align-items: flex-start;
     }
   }
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }
