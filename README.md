@@ -1,7 +1,7 @@
 # BeyondGPA
 
 ## 📌 Overview
-BeyondGPA is a data-driven project exploring the relationship between academic performance and career success. Using a dataset of **5000 students**, we analyze how factors like GPA, university ranking, internships, and networking influence salary, job offers, and career satisfaction.
+BeyondGPA is a data-driven project exploring the relationship between academic performance and career success. Using a dataset of **10000 students**, we analyze how factors like GPA, university ranking, internships, and networking influence salary, job offers, and career satisfaction.
 
 📊 **Dataset Source**: [Education & Career Success Dataset](https://www.kaggle.com/datasets/adilshamim8/education-and-career-success)
 
@@ -23,7 +23,7 @@ BeyondGPA is a data-driven project exploring the relationship between academic p
 
 ## 📂 Dataset Description
 
-The dataset consists of **5000 records**, each representing a student's academic and career background. The features are grouped into four categories:
+The dataset consists of **10000 records**, each representing a student's academic and career background. The features are grouped into four categories:
 
 1. **Personal Information**
    - Age (18-30 years)
