@@ -24,9 +24,9 @@ export class Visual5Component implements AfterViewInit {
           const male = data.filter(d => d.Gender === 'Male');
           const female = data.filter(d => d.Gender === 'Female');
 
-          this.renderLineChart(male, female, 'Starting_Salary', this.salaryChart, 'Salaire initial');
-          this.renderLineChart(male, female, 'Career_Satisfaction', this.satisfactionChart, 'Satisfaction professionnelle');
-          this.renderLineChart(male, female, 'Work_Life_Balance', this.equilibreChart, 'Équilibre vie pro/perso');
+          this.renderLineChart(male, female, 'Starting_Salary', this.salaryChart, 'Starting Salary');
+          this.renderLineChart(male, female, 'Career_Satisfaction', this.satisfactionChart, 'Career Satisfaction');
+          this.renderLineChart(male, female, 'Work_Life_Balance', this.equilibreChart, 'Work/Life Balance');
         });
       }
     }, { threshold: 0.3 });

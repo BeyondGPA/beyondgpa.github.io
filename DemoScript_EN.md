@@ -1,6 +1,6 @@
-**BeyondGPA – Demo Script (INF8808 Final Project)**
+**Demo (EN) · INF8808 Project · Team #12 · BeyondGPA**
 
-Hey everyone! My name’s Omar, and I’m proud to welcome you to the official demo of **BeyondGPA** — a data visualization project built for the INF8808 course at Polytechnique Montréal, Winter 2025.
+Hey everyone! My name’s Omar, and I’m honored proud to welcome you to the official demo of **BeyondGPA** — a data visualization project built for the INF8808 course at Polytechnique Montréal in the Winter 2025 semester.
 
 This project was built by my amazing team consisting of the lovely Ireina, Sam the man, Felix the brains, the great Mohamed, and, of course myself — all under the guidance of our amazing Professor, Mister Thomas Hurtut.
 
@@ -8,10 +8,18 @@ But BeyondGPA is much more than just a school project!
 
 I can hear you asking right now "So what is it?"
 
-Well, at its core, it’s a question I'm sure we’ve all asked ourselves as students: _“Do good grades actually matter?”_  
+Well, at its core,
+
+it’s a question I'm sure we’ve all asked ourselves as students:
+
+ _“Do good grades actually matter?”_  
+
 As a group of engingeering student, believe me, we suffer enough as it is! And so we're almost constently asking :
+
 Are they worth the effort?
+
 Do they actually lead to more job offers? Promotions? Career Satisfaction? 
+
 Or, is there more to success than just your GPA?
 
 To answer that, we found a very useful dataset of 10,000 student profiles — complete with academics, experiences, and career outcomes.
@@ -20,18 +28,44 @@ From there we designed and built a full story website using **Angular and D3.js*
 The journey starts on a space-themed landing page — because we’re not just crunching numbers, we’re going beyond.  
 Beyond stats. Beyond GPAs. Beyond expectations.
 
-Here we have a quick intro, a theme toggle between light and dark modes and our "Start Exploring" button.
-Once we hit it we float through to the core of our project: a scrollable, animated story that reveals how academic and personal variables shape professional futures.
+Here we have a quick intro, a theme toggle between light and dark modes
+
+Like any and all real devs, I always go dark mode but it's up to user preference!
+
+and our "Start Exploring" button.
+
+Once we hit it we float through to the core of our project:
 
 ---
 
-This gets us here, to the main-page, we have a lovely header with our name and slogan, as well as links, one to the about-page (with all the blabla), one to all of the source code hosted on github, and a Theme toggle like the one on the landing page!
+This gets us here, to the main-page,
+
+We have a lovely header with our name and slogan, as well as links, one to the about-page (with all the blabla I just covered), one to all of the source code hosted on github, and a Theme toggle like the one on the landing page!
 
 **Visual 1**: GPA vs. Job Title  
-We kick things off with a box plot showing a strong pattern: students with higher GPAs tend to land higher job titles.  
-It’s a quick win for GPA... but we immediately ask — is this about recognition or compensation?
+We kick things off with a box plot that seeks to understand the impact of GPA on futur job titles
+
+We can very clearly see a strong pattern: 
+
+students with higher GPAs
+
+tend to land higher job titles.  
+
+It’s a quick win for GPA... but we let's not get carried away!
+
+this is just the beginning
+
+We immediately ask — is this about recognition or compensation?
 
 **Visual 2**: GPA vs. Starting Salary  
+Moving on to our second visual, or should I say visuals,
+
+a series of scatter plots for our diffenrt majors,
+
+from art to maths, we've got it all.
+
+We can also change the academic indicator used for the visual,
+
 Here we flip the script: higher grades do _not_ guarantee better pay. Salaries are surprisingly flat across academic tiers.  
 So if grades don’t buy you gold, what does?
 
