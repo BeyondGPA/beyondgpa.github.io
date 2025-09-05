@@ -4,7 +4,9 @@
   "scripts": {
     "start": "ng serve --open",
     "build": "ng build",
-    "deploy": "ng build",
+    "build-production": "ng build --configuration production --base-href \"https://beyondgpa.github.io/\"",
+    "deploy": "npm run build-production && npm run fix-404 && ngh --dir=dist/client --no-notfound",
+    "fix-404": "node fix-404.js",
     "format": "prettier --config ../.prettierrc.yaml --ignore-path ../.prettierignore --write \"src/**/*\""
   },
   "private": true,
