@@ -10,6 +10,7 @@ import { Visual4Component } from "@app/components/d3/visual-4/visual-4.component
 import { Visual5Component } from "@app/components/d3/visual-5/visual-5.component";
 import { VizTransitionComponent } from "@app/components/viz-transition/viz-transition.component";
 import { OutroSummaryComponent } from "@app/components/outro-summary/outro-summary.component";
+import { SeoService } from "@app/services/seo/seo.service";
 
 // import { ScatterVizComponent } from '@app/components/d3/scatter-viz/scatter-viz.component';
 // import { SankeyVizComponent } from '@app/components/d3/sankey-viz/sankey-viz.component';
@@ -36,6 +37,17 @@ import { OutroSummaryComponent } from "@app/components/outro-summary/outro-summa
   styleUrls: ["./main-page.component.scss"],
 })
 export class MainPageComponent {
+  constructor(private seoService: SeoService) {}
+
+  ngOnInit() {
+    // Update SEO for main page
+    this.seoService.updatePageSeo({
+      title: 'Data Visualizations - BeyondGPA | Interactive Education Analytics',
+      description: 'Explore interactive data visualizations showing the relationship between GPA, career success, internships, and professional growth. Discover insights through advanced analytics and D3.js visualizations.',
+      keywords: 'data visualization, education analytics, career success metrics, GPA analysis, D3.js charts, interactive visualizations, student success data, career development insights',
+      url: '/home'
+    });
+  }
   Questions1 = [
     { id: 'A1.1 (★★★)', text: 'To what extent does a high GPA in university correlate with career success?' }
   ];
