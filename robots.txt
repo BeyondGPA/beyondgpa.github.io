@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://beyondgpa.github.io/sitemap.xml
+
+# Important pages for crawling
+Allow: /home
+Allow: /about
+Allow: /assets/
+
+# Disallow build artifacts and unnecessary files
+Disallow: /*.js$
+Disallow: /*.css$
+Disallow: /node_modules/
+Disallow: /src/
+
+# Allow Google and Bing bots specifically
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Crawl-delay for all bots (in seconds)
+Crawl-delay: 1
