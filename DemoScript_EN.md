@@ -1,6 +1,6 @@
 **Demo (EN) · INF8808 Project · Team #12 · BeyondGPA**
 
-Hey everyone! My name’s Omar, and I’m honored proud to welcome you to the official demo of **BeyondGPA** — a data visualization project built for the INF8808 course at Polytechnique Montréal in the Winter 2025 semester.
+Hey everyone! My name’s Omar, and I’m honored and proud to welcome you to the official demo of **BeyondGPA** — a data visualization project built for the INF8808 course at Polytechnique Montréal in the Winter 2025 semester.
 
 This project was built by my amazing team consisting of the lovely Ireina, Sam the man, Felix the brains, the great Mohamed, and, of course myself — all under the guidance of our amazing Professor, Mister Thomas Hurtut.
 
