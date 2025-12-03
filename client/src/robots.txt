@@ -10,8 +10,6 @@ Allow: /about
 Allow: /assets/
 
 # Disallow build artifacts and unnecessary files
-Disallow: /*.js$
-Disallow: /*.css$
 Disallow: /node_modules/
 Disallow: /src/
 
