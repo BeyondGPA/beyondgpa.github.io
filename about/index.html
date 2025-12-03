@@ -18,9 +18,9 @@
   <link rel="canonical" href="https://beyondgpa.github.io/about">
   
   <!-- Favicon and Icons -->
-  <link rel="icon" type="image/x-icon" href="../assets/beyondGPA.png">
-  <link rel="shortcut icon" href="../assets/beyondGPA.png">
-  <link rel="apple-touch-icon" href="../assets/beyondGPA.png">
+  <link rel="icon" type="image/x-icon" href=".././assets/beyondGPA.png">
+  <link rel="shortcut icon" href=".././assets/beyondGPA.png">
+  <link rel="apple-touch-icon" href=".././assets/beyondGPA.png">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -47,36 +47,62 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "AboutPage",
-    "name": "About BeyondGPA",
-    "url": "https://beyondgpa.github.io/about",
-    "description": "Learn about the BeyondGPA team and our mission to explore the relationship between education and career success through innovative data visualization and analytics.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "BeyondGPA",
-      "url": "https://beyondgpa.github.io/"
-    },
+    "@type": "WebSite",
+    "name": "BeyondGPA",
+    "alternateName": "BeyondGPA - Education Career Success Analytics",
+    "url": "https://beyondgpa.github.io/",
+    "description": "Interactive data visualization platform exploring the relationship between education and career success. Discover insights beyond traditional GPA metrics through advanced analytics and visual storytelling.",
     "author": {
       "@type": "Organization",
       "name": "BeyondGPA Team"
     },
     "mainEntity": {
-      "@type": "Organization",
-      "name": "BeyondGPA Team",
-      "description": "Team of data scientists and researchers focused on education analytics"
+      "@type": "SoftwareApplication",
+      "name": "BeyondGPA",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web Browser",
+      "description": "Data visualization platform for education and career success analytics",
+      "url": "https://beyondgpa.github.io/"
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://beyondgpa.github.io/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
     }
   }
   </script>
   
-  <!-- Auto-redirect to correct Angular route -->
+  <!-- Single Page Apps for GitHub Pages -->
   <script type="text/javascript">
-    // Immediately redirect to the Angular app with the correct route
+    // Single Page Apps for GitHub Pages
+    // MIT License
+    // https://github.com/rafgraph/spa-github-pages
+    // This script checks to see if a redirect is present in the query string,
+    // converts it back into the correct url and adds it to the
+    // browser's history using window.history.replaceState(...),
+    // which won't cause the browser to attempt to load the new url.
+    // When the single page app is loaded further down in this file,
+    // the correct url will be waiting in the browser's history for
+    // the single page app to route accordingly.
+    (function(l) {
+      if (l.search[1] === '/' ) {
+        var decoded = l.search.slice(1).split('&').map(function(s) { 
+          return s.replace(/~and~/g, '&')
+        }).join('?')
+        window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+        )
+      }
+    }(window.location))
+  </script>
+<style>*{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;user-select:none}*:focus{outline:none;box-shadow:none}:root{transition:all .3s ease-in-out}:root{--primary-color:#191034;--secondary-color:#424597;--tertiary-color:#1c1656;--quaternary-color:#393c7d;--background-color:#2c177283;--viz-background-color:#0000006f;--viz-section-color:#ffffff0d;--text-color:#cbcbcb;--highlight-color:#e94560;--footer-text:#888}html,app-root,body{width:-webkit-fill-available;margin:0;padding:0}body{font-family:Lucida Console,Monaco,monospace;background-color:var(--primary-color);background-image:linear-gradient(135deg,var(--primary-color),var(--secondary-color),var(--tertiary-color),var(--quaternary-color));background-size:300% 300%;background-repeat:no-repeat;animation:gradientAnimation 12s ease infinite;color:var(--text-color)}body::-webkit-scrollbar{display:none}@keyframes gradientAnimation{0%{background-position:0% 50%}50%{background-position:100% 50%}to{background-position:0% 50%}}:root{--landing-background-color:#212121;--landing-gradient-start:#691ba4;--landing-gradient-mid1:#fe53bb;--landing-gradient-mid2:#8f51ea;--landing-gradient-end:#0044ff;--landing-text-color:#cbcbcb;--landing-highlight-color:#e94560;--btn-hover-bg-color:#212121;--btn-active-border-color:#fe53bb;--circle-color-1:rgba(254, 83, 186, .636);--circle-color-2:rgba(142, 81, 234, .704);--stars-color:#ffffff;--button-hover-bg-color:#ffffff4e;--button-shadow-color:rgba(0, 0, 0, .1)}</style><link rel="stylesheet" href="../styles.42fdffe4c7aa9151.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="../styles.42fdffe4c7aa9151.css"></noscript>
+  <script type="text/javascript">
     if (window.location.pathname === '/about' || window.location.pathname === '/about/') {
       window.history.replaceState(null, null, '/about');
     }
   </script>
-<style>*{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;user-select:none}*:focus{outline:none;box-shadow:none}:root{transition:all .3s ease-in-out}:root{--primary-color:#191034;--secondary-color:#424597;--tertiary-color:#1c1656;--quaternary-color:#393c7d;--background-color:#2c177283;--viz-background-color:#0000006f;--viz-section-color:#ffffff0d;--text-color:#cbcbcb;--highlight-color:#e94560;--footer-text:#888}html,app-root,body{width:-webkit-fill-available;margin:0;padding:0}body{font-family:Lucida Console,Monaco,monospace;background-color:var(--primary-color);background-image:linear-gradient(135deg,var(--primary-color),var(--secondary-color),var(--tertiary-color),var(--quaternary-color));background-size:300% 300%;background-repeat:no-repeat;animation:gradientAnimation 12s ease infinite;color:var(--text-color)}body::-webkit-scrollbar{display:none}@keyframes gradientAnimation{0%{background-position:0% 50%}50%{background-position:100% 50%}to{background-position:0% 50%}}:root{--landing-background-color:#212121;--landing-gradient-start:#691ba4;--landing-gradient-mid1:#fe53bb;--landing-gradient-mid2:#8f51ea;--landing-gradient-end:#0044ff;--landing-text-color:#cbcbcb;--landing-highlight-color:#e94560;--btn-hover-bg-color:#212121;--btn-active-border-color:#fe53bb;--circle-color-1:rgba(254, 83, 186, .636);--circle-color-2:rgba(142, 81, 234, .704);--stars-color:#ffffff;--button-hover-bg-color:#ffffff4e;--button-shadow-color:rgba(0, 0, 0, .1)}</style><link rel="stylesheet" href="../styles.42fdffe4c7aa9151.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="../styles.42fdffe4c7aa9151.css"></noscript></head>
+</head>
 <body>
   <app-root></app-root>
-<script src="../runtime.1e70f244cc06fa31.js" type="module"></script><script src="../polyfills.21e794c06d92d81e.js" type="module"></script><script src="../main.fdbffeae64954ba7.js" type="module"></script></body>
+<script src="../runtime.1e70f244cc06fa31.js" type="module"></script><script src="../polyfills.21e794c06d92d81e.js" type="module"></script><script src="../main.673915cc38f7775b.js" type="module"></script></body>
 </html>
